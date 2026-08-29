@@ -409,12 +409,12 @@ export default function WeddingPage() {
       if (audioBufferRef.current && gestureReceived) startPlayback();
     };
 
-    // Chrome requires a user-activation event to resume an AudioContext.
-    // Scroll doesn't qualify, but on mobile touchstart fires before the
-    // scroll begins. We keep scroll in the list so that if Chrome ever
-    // loosens the policy the handler picks it up, but only clean up the
-    // listeners once resume() actually transitions the context to "running".
-    const gestures = ["scroll", "pointerdown", "touchstart", "keydown"];
+    // Browsers require a user-activation event to resume an AudioContext.
+    // iOS Safari is stricter than Chrome: touchstart and pointerdown do
+    // not qualify because they could be the start of a scroll. Only
+    // touchend (finger lift) and click count. We listen for all plausible
+    // events and retry until resume() actually transitions to "running".
+    const gestures = ["touchend", "pointerup", "click", "pointerdown", "touchstart", "keydown", "scroll"];
     const onGesture = () => {
       if (gestureReceived) return;
       ctx.resume().then(() => {
