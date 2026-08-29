@@ -57,14 +57,8 @@ export default function WeddingPage() {
   const galleryRef = useRef<HTMLElement>(null);
   const detailsRef = useRef<HTMLElement>(null);
   const rsvpRef = useRef<HTMLElement>(null);
-  // Web Audio API refs — the HTML5 <audio> element fails to load MP3s
-  // in some Chrome configurations, while AudioContext.decodeAudioData works.
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const audioBufferRef = useRef<AudioBuffer | null>(null);
-  const gainRef = useRef<GainNode | null>(null);
-  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const playOffsetRef = useRef(0);
-  const playStartRef = useRef(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const fadeRef = useRef<number | null>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const trackRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -155,46 +149,32 @@ export default function WeddingPage() {
     [openLightbox],
   );
 
-  const startPlayback = useCallback(() => {
-    const ctx = audioCtxRef.current;
-    const buf = audioBufferRef.current;
-    const gain = gainRef.current;
-    if (!ctx || !buf || !gain || sourceRef.current) return;
-    if (ctx.state === "suspended") ctx.resume();
-
-    const src = ctx.createBufferSource();
-    src.buffer = buf;
-    src.loop = true;
-    src.connect(gain);
-
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 2);
-
-    const offset = playOffsetRef.current % buf.duration;
-    src.start(0, offset);
-    playStartRef.current = ctx.currentTime;
-    playOffsetRef.current = offset;
-    sourceRef.current = src;
+  const startFadeIn = useCallback((audio: HTMLAudioElement) => {
+    if (fadeRef.current) cancelAnimationFrame(fadeRef.current);
+    audio.volume = 0;
+    audio.play().catch(() => {});
     setPlaying(true);
-  }, []);
-
-  const stopPlayback = useCallback(() => {
-    const ctx = audioCtxRef.current;
-    const src = sourceRef.current;
-    if (!ctx || !src) return;
-    const elapsed = ctx.currentTime - playStartRef.current;
-    const buf = audioBufferRef.current;
-    if (buf) playOffsetRef.current = (playOffsetRef.current + elapsed) % buf.duration;
-    src.stop();
-    sourceRef.current = null;
-    localStorage.setItem("wedding-audio-position", String(playOffsetRef.current));
-    setPlaying(false);
+    const start = performance.now();
+    const step = (t: number) => {
+      const p = Math.min(1, (t - start) / 4000);
+      audio.volume = p;
+      if (p < 1) fadeRef.current = requestAnimationFrame(step);
+      else fadeRef.current = null;
+    };
+    fadeRef.current = requestAnimationFrame(step);
   }, []);
 
   const togglePlay = useCallback(() => {
-    if (sourceRef.current) stopPlayback();
-    else startPlayback();
-  }, [startPlayback, stopPlayback]);
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      startFadeIn(audio);
+    } else {
+      audio.pause();
+      if (fadeRef.current) { cancelAnimationFrame(fadeRef.current); fadeRef.current = null; }
+      setPlaying(false);
+    }
+  }, [startFadeIn]);
 
   useEffect(() => {
     if (!lightboxSrc) return;
@@ -395,57 +375,44 @@ export default function WeddingPage() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const ctx = new AudioContext();
-    audioCtxRef.current = ctx;
-    const gain = ctx.createGain();
-    gain.connect(ctx.destination);
-    gainRef.current = gain;
-
-    let cancelled = false;
-    let gestureReceived = false;
-
-    const tryStart = () => {
-      if (cancelled || sourceRef.current) return;
-      if (audioBufferRef.current && gestureReceived) startPlayback();
-    };
-
-    // Browsers require a user-activation event to resume an AudioContext.
-    // iOS Safari is stricter than Chrome: touchstart and pointerdown do
-    // not qualify because they could be the start of a scroll. Only
-    // touchend (finger lift) and click count. We listen for all plausible
-    // events and retry until resume() actually transitions to "running".
-    const gestures = ["touchend", "pointerup", "click", "pointerdown", "touchstart", "keydown", "scroll"];
-    const onGesture = () => {
-      if (gestureReceived) return;
-      ctx.resume().then(() => {
-        if (ctx.state !== "running" || gestureReceived) return;
-        gestureReceived = true;
-        gestures.forEach(e => window.removeEventListener(e, onGesture, true));
-        tryStart();
-      }).catch(() => {});
-    };
-    gestures.forEach(e => window.addEventListener(e, onGesture, { capture: true }));
-
-    fetch(`${BASE}/assets/music.mp3`)
-      .then((r) => r.arrayBuffer())
-      .then((buf) => ctx.decodeAudioData(buf))
-      .then((decoded) => {
-        audioBufferRef.current = decoded;
-        tryStart();
-      })
-      .catch(() => {});
+    const audio = audioRef.current;
+    if (!audio) return;
 
     const saved = parseFloat(
       localStorage.getItem("wedding-audio-position") || "0",
     );
-    if (!isNaN(saved)) playOffsetRef.current = saved;
+    if (!isNaN(saved)) audio.currentTime = saved;
+
+    // Auto-play with fade-in on first user interaction. iOS Safari
+    // requires touchend or click; touchstart does not qualify.
+    let started = false;
+    const gestures = ["touchend", "pointerup", "click", "keydown"];
+    const onGesture = () => {
+      if (started || !audio.paused) return;
+      started = true;
+      gestures.forEach(e => window.removeEventListener(e, onGesture, true));
+      startFadeIn(audio);
+    };
+    gestures.forEach(e => window.addEventListener(e, onGesture, { capture: true }));
+
+    const onPause = () => {
+      setPlaying(false);
+      localStorage.setItem("wedding-audio-position", String(audio.currentTime));
+    };
+    const onTime = () => {
+      if (Math.floor(audio.currentTime) % 3 === 0)
+        localStorage.setItem("wedding-audio-position", String(audio.currentTime));
+    };
+    audio.addEventListener("pause", onPause);
+    audio.addEventListener("timeupdate", onTime);
 
     return () => {
-      cancelled = true;
       gestures.forEach(e => window.removeEventListener(e, onGesture, true));
-      ctx.close();
+      audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("timeupdate", onTime);
+      localStorage.setItem("wedding-audio-position", String(audio.currentTime));
     };
-  }, [startPlayback]);
+  }, [startFadeIn]);
 
   useEffect(() => {
     const el = storyStackRef.current;
@@ -916,7 +883,7 @@ export default function WeddingPage() {
           >
             {playing ? <Pause size={14} /> : <Play size={14} />}
           </button>
-
+          <audio ref={audioRef} loop className="hidden" src={`${BASE}/assets/music.mp3`} preload="auto" />
         </div>
 
         <span
