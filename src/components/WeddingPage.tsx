@@ -3,18 +3,20 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, Disc3 } from "lucide-react";
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 const STORY_PHOTOS = [
-  { src: "/assets/story-photo.webp", alt: "Yu and Jin" },
-  { src: "/assets/photo-pei.jpeg", alt: "Yu and Jin on the red cliffs" },
-  { src: "/assets/photo-lighthouse.jpeg", alt: "Yu and Jin at the lighthouse" },
-  { src: "/assets/photo-closeup.jpeg", alt: "Yu and Jin, close up" },
-  { src: "/assets/photo-peace.jpeg", alt: "Yu and Jin in the sun" },
-  { src: "/assets/photo-newyear.jpeg", alt: "Yu and Jin at new year" },
-  { src: "/assets/photo-bridge.jpeg", alt: "Yu and Jin on the stone bridge" },
+  { src: `${BASE}/assets/story-photo.webp`, alt: "Yu and Jin" },
+  { src: `${BASE}/assets/photo-pei.jpeg`, alt: "Yu and Jin on the red cliffs" },
+  { src: `${BASE}/assets/photo-lighthouse.jpeg`, alt: "Yu and Jin at the lighthouse" },
+  { src: `${BASE}/assets/photo-closeup.jpeg`, alt: "Yu and Jin, close up" },
+  { src: `${BASE}/assets/photo-peace.jpeg`, alt: "Yu and Jin in the sun" },
+  { src: `${BASE}/assets/photo-newyear.jpeg`, alt: "Yu and Jin at new year" },
+  { src: `${BASE}/assets/photo-bridge.jpeg`, alt: "Yu and Jin on the stone bridge" },
 ];
 
 const GALLERY_PHOTOS = Array.from({ length: 9 }, (_, i) => ({
-  src: `/assets/g${i + 1}.jpeg`,
+  src: `${BASE}/assets/g${i + 1}.jpeg`,
   alt: "Yu and Jin",
 }));
 
@@ -424,7 +426,7 @@ export default function WeddingPage() {
     };
     gestures.forEach(e => window.addEventListener(e, onGesture, { capture: true }));
 
-    fetch("/assets/music.mp3")
+    fetch(`${BASE}/assets/music.mp3`)
       .then((r) => r.arrayBuffer())
       .then((buf) => ctx.decodeAudioData(buf))
       .then((decoded) => {
@@ -675,7 +677,7 @@ export default function WeddingPage() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/assets/hero-illustration.webp"
+            src={`${BASE}/assets/hero-illustration.webp`}
             alt=""
             className="absolute inset-0 z-[-2] block w-full h-full object-cover"
             style={{ filter: "sepia(0.14) saturate(0.9)" }}
@@ -705,14 +707,14 @@ export default function WeddingPage() {
                 <div className="absolute inset-2.25 border-2 border-[#e6c489]" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/assets/rose-floral-flourish.svg"
+                  src={`${BASE}/assets/rose-floral-flourish.svg`}
                   alt=""
                   className="absolute top-1 right-1 w-[64%] opacity-[0.92]"
                   style={{ transform: "translate(21.5%, 18%) rotate(-270deg) scaleX(-1)" }}
                 />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/assets/deco-stamp.svg"
+                  src={`${BASE}/assets/deco-stamp.svg`}
                   alt=""
                   className="absolute bottom-2.5 left-2.5 w-[23%] opacity-[0.92]"
                   style={{ transform: "scaleX(-1)" }}
@@ -726,7 +728,7 @@ export default function WeddingPage() {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/assets/Chinese-Wedding-Symbol.svg"
+                  src={`${BASE}/assets/Chinese-Wedding-Symbol.svg`}
                   alt="Double happiness"
                   className="block h-auto"
                   style={{ width: "clamp(5.625rem,24vw,9.375rem)" }}
