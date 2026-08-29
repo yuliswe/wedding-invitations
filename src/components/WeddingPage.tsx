@@ -19,7 +19,7 @@ const GALLERY_PHOTOS = Array.from({ length: 9 }, (_, i) => ({
 }));
 
 const WEDDING_DATE = new Date("2026-09-15T13:00:00");
-const RSVP_DEADLINE = "Please respond by Friday, September 4, 2026 — we need to book the bowling lanes.";
+const RSVP_DEADLINE = "Please respond by Friday, September 4, 2026 - we need to book the bowling lanes.";
 
 const CARD_TILTS = [0, -3.2, 2.6, -1.6, 3.4, -2.4, 1.9];
 const TOTAL_CARDS = 7;
@@ -911,11 +911,16 @@ export default function WeddingPage() {
         <p
           className="m-0 text-text-primary text-body leading-body max-w-measure"
         >
-          We met on [how you met], and it took us about five minutes to realize
-          we&rsquo;d found our favorite person to be ridiculous with. Somewhere
-          between [a funny early memory] and a very good dog, we decided to make
-          it official — twice, apparently, because one party clearly wasn&rsquo;t
-          enough.
+          We&rsquo;re getting married! 💍 ❤️
+          <br /><br />
+          Our story began with a road trip we were planning to Tobermory, never
+          knowing it would lead us somewhere far more beautiful.
+          <br /><br />
+          We fell in love in the golden days of August, and somewhere between
+          then and now, the trails of Kitchener and Waterloo became part of our
+          story. We wandered through endless paths, stayed beneath skies filled
+          with stars, made wishes on shooting stars, and stood together beneath
+          the glow of the Northern Lights.
         </p>
 
         <div className="mt-7 w-screen ml-[calc(50%-50vw)] px-5 box-border">
@@ -987,6 +992,24 @@ export default function WeddingPage() {
             </div>
           </div>
         </div>
+        <p
+          className="mt-7 text-text-primary text-body leading-body max-w-measure"
+        >
+          So many ordinary days became unforgettable memories. So many little
+          adventures became a life we now call our own.
+          <br /><br />
+          And now, we&rsquo;re ready to begin the next chapter of our story
+          — together, as husband and wife. ❤️
+          <br /><br />
+          We&rsquo;ll officially sign our marriage papers at Waterloo City Hall
+          on September 15th.
+          <br /><br />
+          And on September 19th, we&rsquo;ll celebrate with an after-party,
+          surrounded by the people we love.
+          <br /><br />
+          We&rsquo;d be so happy to have our friends there to witness this
+          beautiful moment and celebrate with us as we begin forever. 🥂 ✨
+        </p>
       </section>
 
       <hr className="h-0 m-0 border-0 border-t border-border-hairline" />
