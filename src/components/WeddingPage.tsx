@@ -153,45 +153,46 @@ export default function WeddingPage() {
     [openLightbox],
   );
 
-  const togglePlay = useCallback(() => {
-    setPlaying((prev) => {
-      const ctx = audioCtxRef.current;
-      const buf = audioBufferRef.current;
-      const gain = gainRef.current;
-      const next = !prev;
+  const startPlayback = useCallback(() => {
+    const ctx = audioCtxRef.current;
+    const buf = audioBufferRef.current;
+    const gain = gainRef.current;
+    if (!ctx || !buf || !gain || sourceRef.current) return;
+    if (ctx.state === "suspended") ctx.resume();
 
-      if (next) {
-        if (!ctx || !buf || !gain) return prev;
-        if (ctx.state === "suspended") ctx.resume();
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+    src.connect(gain);
 
-        const src = ctx.createBufferSource();
-        src.buffer = buf;
-        src.loop = true;
-        src.connect(gain);
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 2);
 
-        gain.gain.setValueAtTime(0, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 2);
-
-        const offset = playOffsetRef.current % buf.duration;
-        src.start(0, offset);
-        playStartRef.current = ctx.currentTime;
-        playOffsetRef.current = offset;
-        sourceRef.current = src;
-      } else {
-        if (ctx) {
-          const src = sourceRef.current;
-          if (src) {
-            const elapsed = ctx.currentTime - playStartRef.current;
-            if (buf) playOffsetRef.current = (playOffsetRef.current + elapsed) % buf.duration;
-            src.stop();
-            sourceRef.current = null;
-          }
-          localStorage.setItem("wedding-audio-position", String(playOffsetRef.current));
-        }
-      }
-      return next;
-    });
+    const offset = playOffsetRef.current % buf.duration;
+    src.start(0, offset);
+    playStartRef.current = ctx.currentTime;
+    playOffsetRef.current = offset;
+    sourceRef.current = src;
+    setPlaying(true);
   }, []);
+
+  const stopPlayback = useCallback(() => {
+    const ctx = audioCtxRef.current;
+    const src = sourceRef.current;
+    if (!ctx || !src) return;
+    const elapsed = ctx.currentTime - playStartRef.current;
+    const buf = audioBufferRef.current;
+    if (buf) playOffsetRef.current = (playOffsetRef.current + elapsed) % buf.duration;
+    src.stop();
+    sourceRef.current = null;
+    localStorage.setItem("wedding-audio-position", String(playOffsetRef.current));
+    setPlaying(false);
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    if (sourceRef.current) stopPlayback();
+    else startPlayback();
+  }, [startPlayback, stopPlayback]);
 
   useEffect(() => {
     if (!lightboxSrc) return;
@@ -398,11 +399,37 @@ export default function WeddingPage() {
     gain.connect(ctx.destination);
     gainRef.current = gain;
 
+    let cancelled = false;
+    let gestureReceived = false;
+
+    const tryStart = () => {
+      if (cancelled || sourceRef.current) return;
+      if (audioBufferRef.current && gestureReceived) startPlayback();
+    };
+
+    // Chrome requires a user-activation event to resume an AudioContext.
+    // Scroll doesn't qualify, but on mobile touchstart fires before the
+    // scroll begins. We keep scroll in the list so that if Chrome ever
+    // loosens the policy the handler picks it up, but only clean up the
+    // listeners once resume() actually transitions the context to "running".
+    const gestures = ["scroll", "pointerdown", "touchstart", "keydown"];
+    const onGesture = () => {
+      if (gestureReceived) return;
+      ctx.resume().then(() => {
+        if (ctx.state !== "running" || gestureReceived) return;
+        gestureReceived = true;
+        gestures.forEach(e => window.removeEventListener(e, onGesture, true));
+        tryStart();
+      }).catch(() => {});
+    };
+    gestures.forEach(e => window.addEventListener(e, onGesture, { capture: true }));
+
     fetch("/assets/music.mp3")
       .then((r) => r.arrayBuffer())
       .then((buf) => ctx.decodeAudioData(buf))
       .then((decoded) => {
         audioBufferRef.current = decoded;
+        tryStart();
       })
       .catch(() => {});
 
@@ -412,9 +439,11 @@ export default function WeddingPage() {
     if (!isNaN(saved)) playOffsetRef.current = saved;
 
     return () => {
+      cancelled = true;
+      gestures.forEach(e => window.removeEventListener(e, onGesture, true));
       ctx.close();
     };
-  }, []);
+  }, [startPlayback]);
 
   useEffect(() => {
     const el = storyStackRef.current;
