@@ -553,22 +553,22 @@ export default function WeddingPage() {
   };
 
   const flapStyle: React.CSSProperties = {
-    left: "calc(-1 * clamp(8px,2.2vw,14px))",
-    right: "calc(-1 * clamp(8px,2.2vw,14px))",
-    top: "clamp(18px,4vw,26px)",
-    height: "clamp(62px,16vw,108px)",
+    left: "calc(-1 * clamp(0.5rem,2.2vw,0.875rem))",
+    right: "calc(-1 * clamp(0.5rem,2.2vw,0.875rem))",
+    top: "clamp(1.125rem,4vw,1.625rem)",
+    height: "clamp(3.875rem,16vw,6.75rem)",
     filter:
-      "drop-shadow(0 2px 4px color-mix(in srgb, var(--color-neutral-900) 16%, transparent)) drop-shadow(0 1px 1px color-mix(in srgb, var(--color-neutral-900) 12%, transparent))",
+      "drop-shadow(0 0.125rem 0.25rem color-mix(in srgb, var(--color-neutral-900) 16%, transparent)) drop-shadow(0 1px 1px color-mix(in srgb, var(--color-neutral-900) 12%, transparent))",
     ...(opened
       ? { transform: "rotateX(-168deg)", opacity: 0.62, zIndex: 0 }
       : { transform: "rotateX(0deg)", opacity: 1, zIndex: 0 }),
   };
 
   const cardStyle: React.CSSProperties = {
-    padding: "clamp(6px,1.6vw,9px)",
+    padding: "clamp(0.375rem,1.6vw,0.5625rem)",
     ...(opened
       ? { transform: "translateY(0) scale(1)", opacity: 1 }
-      : { transform: "translateY(58px) scale(0.965)", opacity: 0 }),
+      : { transform: "translateY(3.625rem) scale(0.965)", opacity: 0 }),
   };
 
   return (
@@ -599,7 +599,7 @@ export default function WeddingPage() {
             className="absolute top-4 right-4 w-tap h-tap inline-flex items-center justify-center bg-transparent rounded-md text-neutral-100 leading-none cursor-pointer font-body"
             style={{
               border: "1px solid color-mix(in srgb, var(--color-neutral-100) 40%, transparent)",
-              fontSize: 20,
+              fontSize: "1.25rem",
             }}
           >
             ×
@@ -616,7 +616,7 @@ export default function WeddingPage() {
           ref={stageRef}
           className="sticky top-0 isolate flex flex-col justify-center overflow-hidden"
           style={{
-            padding: "clamp(14px,3vh,34px) 20px",
+            padding: "clamp(0.875rem,3vh,2.125rem) 1.25rem",
             height: "100svh",
             animation: "ledger-rise var(--duration-rise) var(--easing) both",
           }}
@@ -634,20 +634,20 @@ export default function WeddingPage() {
           >
             <div
               className="relative w-full max-w-100 mx-auto"
-              style={{ perspective: 1400 }}
+              style={{ perspective: "87.5rem" }}
             >
               {/* Envelope back */}
               <div
                 className="absolute z-[1] overflow-hidden rounded-sm"
                 style={{
-                  left: "calc(-1 * clamp(8px,2.2vw,14px))",
-                  right: "calc(-1 * clamp(8px,2.2vw,14px))",
-                  top: "clamp(18px,4vw,26px)",
-                  bottom: "calc(-1 * clamp(30px,7vw,48px))",
+                  left: "calc(-1 * clamp(0.5rem,2.2vw,0.875rem))",
+                  right: "calc(-1 * clamp(0.5rem,2.2vw,0.875rem))",
+                  top: "clamp(1.125rem,4vw,1.625rem)",
+                  bottom: "calc(-1 * clamp(1.875rem,7vw,3rem))",
                   background: "#7f1934",
                   border: "1px solid #5d1327",
                   boxShadow:
-                    "0 18px 38px color-mix(in srgb, var(--color-neutral-900) 30%, transparent), 0 4px 10px color-mix(in srgb, var(--color-neutral-900) 20%, transparent)",
+                    "0 1.125rem 2.375rem color-mix(in srgb, var(--color-neutral-900) 30%, transparent), 0 0.25rem 0.625rem color-mix(in srgb, var(--color-neutral-900) 20%, transparent)",
                 }}
               >
                 <div className="absolute inset-2.25 border-2 border-[#e6c489]" />
@@ -677,19 +677,19 @@ export default function WeddingPage() {
                   src="/assets/Chinese-Wedding-Symbol.svg"
                   alt="Double happiness"
                   className="block h-auto"
-                  style={{ width: "clamp(90px,24vw,150px)" }}
+                  style={{ width: "clamp(5.625rem,24vw,9.375rem)" }}
                 />
                 <span
                   className="h-px"
                   style={{
-                    width: "clamp(60px,16vw,104px)",
+                    width: "clamp(3.75rem,16vw,6.5rem)",
                     background: "color-mix(in srgb, var(--color-accent) 60%, transparent)",
                   }}
                 />
                 <span
                   className="uppercase text-accent-300 font-body font-semibold"
                   style={{
-                    fontSize: "clamp(9px,2.4vw,12px)",
+                    fontSize: "clamp(0.5625rem,2.4vw,0.75rem)",
                     letterSpacing: "0.34em",
                     textIndent: "0.34em",
                   }}
@@ -720,7 +720,7 @@ export default function WeddingPage() {
                 <span
                   className="uppercase text-accent-200 font-body font-semibold"
                   style={{
-                    fontSize: "clamp(12px,3vw,15px)",
+                    fontSize: "clamp(0.75rem,3vw,0.9375rem)",
                     letterSpacing: "0.18em",
                   }}
                 >
@@ -730,7 +730,7 @@ export default function WeddingPage() {
                   className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-accent-200 leading-none font-body"
                   style={{
                     border: "1.5px solid var(--color-accent-300)",
-                    fontSize: 22,
+                    fontSize: "1.375rem",
                     animation: "scrollHint 1.8s ease-in-out infinite",
                   }}
                 >
@@ -749,7 +749,7 @@ export default function WeddingPage() {
                 />
                 <div
                   className="relative text-center border border-border-accent-300"
-                  style={{ padding: "clamp(28px,6.5vw,46px) clamp(18px,5vw,34px) clamp(26px,5.5vw,42px)" }}
+                  style={{ padding: "clamp(1.75rem,6.5vw,2.875rem) clamp(1.125rem,5vw,2.125rem) clamp(1.625rem,5.5vw,2.625rem)" }}
                 >
                   <h6 className="text-text-accent">You are invited</h6>
                   <p
@@ -773,7 +773,7 @@ export default function WeddingPage() {
                     style={{
                       fontFamily: "'Pinyon Script', 'Newsreader', Georgia, serif",
                       fontWeight: 400,
-                      fontSize: "clamp(44px,11vw,68px)",
+                      fontSize: "clamp(2.75rem,11vw,4.25rem)",
                       lineHeight: 1.08,
                       letterSpacing: 0,
                     }}
@@ -785,10 +785,10 @@ export default function WeddingPage() {
                   <p
                     className="text-text-primary"
                     style={{
-                      fontSize: "clamp(15px,4vw,16px)",
+                      fontSize: "clamp(0.9375rem,4vw,1rem)",
                       lineHeight: 1.75,
                       maxWidth: "46ch",
-                      margin: "20px auto 0",
+                      margin: "1.25rem auto 0",
                     }}
                   >
                     The paperwork happens at Waterloo City Hall. The real
@@ -801,7 +801,7 @@ export default function WeddingPage() {
                       className="leading-none text-accent [font-variant-numeric:tabular-nums_lining-nums] font-heading"
                       style={{
                         fontWeight: 400,
-                        fontSize: "clamp(38px,10vw,52px)",
+                        fontSize: "clamp(2.375rem,10vw,3.25rem)",
                       }}
                     >
                       {countDisplay}
@@ -832,11 +832,11 @@ export default function WeddingPage() {
       </section>
 
       {/* ── Sticky nav ── */}
-      <nav className="sticky top-0 z-20 flex items-center gap-[clamp(7px,2vw,12px)] px-4 min-h-11 bg-surface-page border-t border-b border-border-hairline">
+      <nav className="sticky top-0 z-20 flex items-center gap-[clamp(0.4375rem,2vw,0.75rem)] px-4 min-h-11 bg-surface-page border-t border-b border-border-hairline">
         <span
           className="whitespace-nowrap flex-none leading-none inline-flex items-center self-center relative top-0.5 font-heading font-medium"
           style={{
-            fontSize: "clamp(15px,4vw,17px)",
+            fontSize: "clamp(0.9375rem,4vw,1.0625rem)",
             letterSpacing: "-0.01em",
           }}
         >
@@ -884,7 +884,7 @@ export default function WeddingPage() {
           className="ml-auto flex-none whitespace-nowrap inline-flex items-center justify-center min-h-7.5 no-underline text-accent-700 bg-transparent border border-accent rounded-md hover-rsvp font-interactable text-control font-semibold"
           data-rsvp-pulse
           style={{
-            padding: "0 clamp(10px,2.5vw,14px)",
+            padding: "0 clamp(0.625rem,2.5vw,0.875rem)",
             animation: "rsvpPulse 1s var(--easing) infinite",
           }}
         >
@@ -903,8 +903,8 @@ export default function WeddingPage() {
           Our story
         </h6>
         <h2
-          className="m-0 mb-4.5"
-          style={{ fontSize: "clamp(27px,6vw,32px)" }}
+          className="mb-4.5"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           How we got here
         </h2>
@@ -982,7 +982,7 @@ export default function WeddingPage() {
                   }
                   className="w-tap h-tap p-0 inline-flex items-center justify-center bg-transparent border border-border-hairline rounded-md text-text-secondary leading-none cursor-pointer font-body"
                   style={{
-                    fontSize: 15,
+                    fontSize: "0.9375rem",
                     transition: "border-color var(--duration-fade) var(--easing)",
                   }}
                 >
@@ -1025,8 +1025,8 @@ export default function WeddingPage() {
           Schedule
         </h6>
         <h2
-          className="m-0 mb-6"
-          style={{ fontSize: "clamp(27px,6vw,32px)" }}
+          className="mb-6"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           You are invited to two events
         </h2>
@@ -1036,12 +1036,12 @@ export default function WeddingPage() {
               Event 1
             </h6>
             <h3
-              className="m-0 mb-3.5 text-h4"
+              className="mb-3.5 text-h4"
             >
               Wedding Ceremony
             </h3>
             <p
-              className="m-0 mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-small leading-[1.7]"
+              className="mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-small leading-[1.7]"
               style={{
                 borderBottom: "1px solid color-mix(in srgb, var(--color-text) 8%, transparent)",
               }}
@@ -1068,12 +1068,12 @@ export default function WeddingPage() {
               Event 2
             </h6>
             <h3
-              className="m-0 mb-3.5 text-h4"
+              className="mb-3.5 text-h4"
             >
               Bowling Party
             </h3>
             <p
-              className="m-0 mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-small leading-[1.7]"
+              className="mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-small leading-[1.7]"
               style={{
                 borderBottom: "1px solid color-mix(in srgb, var(--color-text) 8%, transparent)",
               }}
@@ -1112,8 +1112,8 @@ export default function WeddingPage() {
           Gallery
         </h6>
         <h2
-          className="m-0 mb-6"
-          style={{ fontSize: "clamp(27px,6vw,32px)" }}
+          className="mb-6"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           A few favourites
         </h2>
@@ -1149,15 +1149,15 @@ export default function WeddingPage() {
           Good to know
         </h6>
         <h2
-          className="m-0 mb-6"
-          style={{ fontSize: "clamp(27px,6vw,32px)" }}
+          className="mb-6"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           Details
         </h2>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
           <div className="p-5.5 border border-border-hairline rounded-md">
             <h3
-              className="m-0 mb-2.5 text-h5"
+              className="mb-2.5 text-h5"
             >
               What to wear
             </h3>
@@ -1170,7 +1170,7 @@ export default function WeddingPage() {
           </div>
           <div className="p-5.5 border border-border-hairline rounded-md">
             <h3
-              className="m-0 mb-2.5 text-h5"
+              className="mb-2.5 text-h5"
             >
               Dietary and accessibility
             </h3>
@@ -1196,13 +1196,13 @@ export default function WeddingPage() {
       >
         <h6 className="text-text-accent mb-3.5">RSVP</h6>
         <h2
-          className="m-0 mb-2.5"
-          style={{ fontSize: "clamp(27px,6vw,32px)" }}
+          className="mb-2.5"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           Let us know which events you are going
         </h2>
         <p
-          className="m-0 mb-7 text-text-secondary text-small leading-[1.7]"
+          className="mb-7 text-text-secondary text-small leading-[1.7]"
         >
           {RSVP_DEADLINE}
         </p>
