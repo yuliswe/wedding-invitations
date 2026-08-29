@@ -580,7 +580,7 @@ export default function WeddingPage() {
           role="dialog"
           aria-modal
           aria-label="Photograph"
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-[24px] cursor-zoom-out"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-6 cursor-zoom-out"
           style={{
             background: "color-mix(in srgb, var(--color-neutral-900) 88%, transparent)",
             animation: "ledger-fade var(--duration-fade) var(--easing) both",
@@ -596,7 +596,7 @@ export default function WeddingPage() {
             type="button"
             onClick={closeLightbox}
             aria-label="Close"
-            className="absolute top-[16px] right-[16px] w-[var(--tap)] h-[var(--tap)] inline-flex items-center justify-center bg-transparent rounded-[var(--radius-md)] text-[color:var(--color-neutral-100)] leading-none cursor-pointer"
+            className="absolute top-4 right-4 w-[var(--tap)] h-[var(--tap)] inline-flex items-center justify-center bg-transparent rounded-[var(--radius-md)] text-[color:var(--color-neutral-100)] leading-none cursor-pointer"
             style={{
               border: "1px solid color-mix(in srgb, var(--color-neutral-100) 40%, transparent)",
               fontFamily: "var(--font-body)",
@@ -635,7 +635,7 @@ export default function WeddingPage() {
             className="w-full origin-center will-change-transform"
           >
             <div
-              className="relative w-full max-w-[400px] mx-auto"
+              className="relative w-full max-w-100 mx-auto"
               style={{ perspective: 1400 }}
             >
               {/* Envelope back */}
@@ -652,19 +652,19 @@ export default function WeddingPage() {
                     "0 18px 38px color-mix(in srgb, var(--color-neutral-900) 30%, transparent), 0 4px 10px color-mix(in srgb, var(--color-neutral-900) 20%, transparent)",
                 }}
               >
-                <div className="absolute inset-[9px] border-2 border-[#e6c489]" />
+                <div className="absolute inset-2.25 border-2 border-[#e6c489]" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/assets/rose-floral-flourish.svg"
                   alt=""
-                  className="absolute top-[4px] right-[4px] w-[64%] opacity-[0.92]"
+                  className="absolute top-1 right-1 w-[64%] opacity-[0.92]"
                   style={{ transform: "translate(21.5%, 18%) rotate(-270deg) scaleX(-1)" }}
                 />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/assets/deco-stamp.svg"
                   alt=""
-                  className="absolute bottom-[10px] left-[10px] w-[23%] opacity-[0.92]"
+                  className="absolute bottom-2.5 left-2.5 w-[23%] opacity-[0.92]"
                   style={{ transform: "scaleX(-1)" }}
                 />
               </div>
@@ -672,7 +672,7 @@ export default function WeddingPage() {
               {/* Double happiness + badge */}
               <div
                 aria-hidden
-                className="absolute left-0 right-0 top-1/2 -translate-y-1/2 z-[2] flex flex-col items-center gap-[10px] pointer-events-none"
+                className="absolute left-0 right-0 top-1/2 -translate-y-1/2 z-[2] flex flex-col items-center gap-2.5 pointer-events-none"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -718,7 +718,7 @@ export default function WeddingPage() {
               <div
                 ref={hintRef}
                 aria-hidden
-                className="absolute left-0 right-0 bottom-[4%] z-[2] flex flex-col items-center gap-[12px] pointer-events-none"
+                className="absolute left-0 right-0 bottom-[4%] z-[2] flex flex-col items-center gap-3 pointer-events-none"
                 style={opened ? { opacity: 0, visibility: "hidden" } : undefined}
               >
                 <span
@@ -733,7 +733,7 @@ export default function WeddingPage() {
                   Scroll to open
                 </span>
                 <span
-                  className="inline-flex items-center justify-center w-[44px] h-[44px] rounded-[var(--radius-lg)] text-[color:var(--color-accent-200)] leading-none"
+                  className="inline-flex items-center justify-center w-11 h-11 rounded-[var(--radius-lg)] text-[color:var(--color-accent-200)] leading-none"
                   style={{
                     border: "1.5px solid var(--color-accent-300)",
                     fontFamily: "var(--font-body)",
@@ -760,7 +760,7 @@ export default function WeddingPage() {
                 >
                   <h6 className="text-[color:var(--text-accent)]">You are invited</h6>
                   <p
-                    className="uppercase text-[color:var(--text-muted)] mt-[6px]"
+                    className="uppercase text-[color:var(--text-muted)] mt-1.5"
                     style={{
                       fontFamily: "var(--font-body)",
                       fontSize: "var(--text-caption)",
@@ -770,7 +770,7 @@ export default function WeddingPage() {
                     to the wedding of
                   </p>
 
-                  <div className="flex items-center gap-[14px] my-[26px]">
+                  <div className="flex items-center gap-3.5 my-6.5">
                     <span className="flex-1 h-px bg-[var(--color-accent-300)]" />
                     <span
                       className="leading-none text-[color:var(--color-accent)]"
@@ -812,7 +812,7 @@ export default function WeddingPage() {
                     balls at Bingemans. Everyone&rsquo;s invited to both.
                   </p>
 
-                  <div className="flex flex-col items-center gap-[4px] mt-[32px] pt-[24px] border-t border-[var(--color-accent-300)]">
+                  <div className="flex flex-col items-center gap-1 mt-8 pt-6 border-t border-[var(--color-accent-300)]">
                     <span
                       className="leading-none text-[color:var(--color-accent)] [font-variant-numeric:tabular-nums_lining-nums]"
                       style={{
@@ -835,10 +835,10 @@ export default function WeddingPage() {
                     </span>
                   </div>
 
-                  <div className="flex gap-[12px] flex-wrap justify-center mt-[28px]">
+                  <div className="flex gap-3 flex-wrap justify-center mt-7">
                     <a
                       href="#schedule"
-                      className="inline-flex items-center justify-center min-h-[var(--tap)] px-[22px] no-underline text-[color:var(--text-primary)] bg-transparent border border-[var(--border-hairline)] rounded-[var(--radius-md)] hover-accent-border"
+                      className="inline-flex items-center justify-center min-h-[var(--tap)] px-5.5 no-underline text-[color:var(--text-primary)] bg-transparent border border-[var(--border-hairline)] rounded-[var(--radius-md)] hover-accent-border"
                       style={{
                         fontFamily: "var(--font-interactable)",
                         fontSize: "var(--text-control)",
@@ -857,9 +857,9 @@ export default function WeddingPage() {
       </section>
 
       {/* ── Sticky nav ── */}
-      <nav className="sticky top-0 z-20 flex items-center gap-[clamp(7px,2vw,12px)] px-[16px] min-h-[44px] bg-[var(--surface-page)] border-t border-b border-[var(--border-hairline)]">
+      <nav className="sticky top-0 z-20 flex items-center gap-[clamp(7px,2vw,12px)] px-4 min-h-11 bg-[var(--surface-page)] border-t border-b border-[var(--border-hairline)]">
         <span
-          className="whitespace-nowrap flex-none leading-none inline-flex items-center self-center relative top-[2px]"
+          className="whitespace-nowrap flex-none leading-none inline-flex items-center self-center relative top-0.5"
           style={{
             fontFamily: "var(--font-heading)",
             fontWeight: 500,
@@ -870,7 +870,7 @@ export default function WeddingPage() {
           Yu &amp; Jin
         </span>
 
-        <div className="flex items-center gap-[8px]">
+        <div className="flex items-center gap-2">
           <Disc3
             size={34}
             strokeWidth={1.5}
@@ -885,7 +885,7 @@ export default function WeddingPage() {
             type="button"
             onClick={togglePlay}
             aria-label={playing ? "Pause music" : "Play music"}
-            className="inline-flex items-center justify-center w-[28px] h-[28px] p-0 bg-transparent border border-[var(--border-hairline)] rounded-[var(--radius-md)] text-[color:var(--color-accent)] cursor-pointer hover-state-bg"
+            className="inline-flex items-center justify-center w-7 h-7 p-0 bg-transparent border border-[var(--border-hairline)] rounded-[var(--radius-md)] text-[color:var(--color-accent)] cursor-pointer hover-state-bg"
           >
             {playing ? <Pause size={14} /> : <Play size={14} />}
           </button>
@@ -912,7 +912,7 @@ export default function WeddingPage() {
 
         <a
           href="#rsvp"
-          className="ml-auto flex-none whitespace-nowrap inline-flex items-center justify-center min-h-[30px] no-underline text-[color:var(--color-accent-700)] bg-transparent border border-[var(--color-accent)] rounded-[var(--radius-md)] hover-rsvp"
+          className="ml-auto flex-none whitespace-nowrap inline-flex items-center justify-center min-h-7.5 no-underline text-[color:var(--color-accent-700)] bg-transparent border border-[var(--color-accent)] rounded-[var(--radius-md)] hover-rsvp"
           data-rsvp-pulse
           style={{
             padding: "0 clamp(10px,2.5vw,14px)",
@@ -930,14 +930,14 @@ export default function WeddingPage() {
       <section
         id="story"
         ref={storyRef}
-        className="px-[20px] py-[52px] max-w-[1120px] mx-auto"
+        className="px-5 py-13 max-w-280 mx-auto"
         style={revealStyle("story")}
       >
-        <h6 className="text-[color:var(--text-accent)] mb-[14px]">
+        <h6 className="text-[color:var(--text-accent)] mb-3.5">
           Our story
         </h6>
         <h2
-          className="m-0 mb-[18px]"
+          className="m-0 mb-4.5"
           style={{ fontSize: "clamp(27px,6vw,32px)" }}
         >
           How we got here
@@ -957,7 +957,7 @@ export default function WeddingPage() {
           enough.
         </p>
 
-        <div className="mt-[28px] w-screen ml-[calc(50%-50vw)] px-[20px] box-border">
+        <div className="mt-7 w-screen ml-[calc(50%-50vw)] px-5 box-border">
           <div
             ref={storyStackRef}
             onPointerDown={onStackDown}
@@ -970,22 +970,22 @@ export default function WeddingPage() {
                 ref={(el) => {
                   cardRefs.current[i] = el;
                 }}
-                className="absolute inset-0 m-0 p-[10px] bg-[var(--surface-raised)] border border-[var(--border-hairline)] rounded-[var(--radius-md)] shadow-[var(--shadow-sm)] overflow-hidden origin-bottom"
+                className="absolute inset-0 m-0 p-2.5 bg-[var(--surface-raised)] border border-[var(--border-hairline)] rounded-[var(--radius-md)] shadow-[var(--shadow-sm)] overflow-hidden origin-bottom"
                 style={{ zIndex: 10 - i }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={photo.src}
                   alt={photo.alt}
-                  className="block w-full h-full object-cover rounded-[2px] pointer-events-none"
+                  className="block w-full h-full object-cover rounded-xs pointer-events-none"
                   style={{ filter: "sepia(0.1) saturate(0.94)" }}
                 />
               </figure>
             ))}
           </div>
 
-          <div className="relative z-20 flex items-center gap-[14px] mt-[40px]">
-            <div className="flex gap-[7px] items-center">
+          <div className="relative z-20 flex items-center gap-3.5 mt-10">
+            <div className="flex gap-1.75 items-center">
               {Array.from({ length: TOTAL_CARDS }, (_, i) => (
                 <button
                   key={i}
@@ -1005,7 +1005,7 @@ export default function WeddingPage() {
             >
               {storyIndex + 1} / {TOTAL_CARDS}
             </span>
-            <div className="ml-auto flex gap-[6px]">
+            <div className="ml-auto flex gap-1.5">
               {(["‹", "›"] as const).map((arrow, idx) => (
                 <button
                   key={arrow}
@@ -1039,31 +1039,31 @@ export default function WeddingPage() {
       <section
         id="schedule"
         ref={scheduleRef}
-        className="px-[20px] py-[52px] max-w-[1120px] mx-auto"
+        className="px-5 py-13 max-w-280 mx-auto"
         style={revealStyle("schedule")}
       >
-        <h6 className="text-[color:var(--text-accent)] mb-[14px]">
+        <h6 className="text-[color:var(--text-accent)] mb-3.5">
           Schedule
         </h6>
         <h2
-          className="m-0 mb-[24px]"
+          className="m-0 mb-6"
           style={{ fontSize: "clamp(27px,6vw,32px)" }}
         >
           You are invited to two events
         </h2>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-[16px]">
-          <div className="p-[22px] border border-[var(--border-hairline)] rounded-[var(--radius-md)] hover-accent-border">
-            <h6 className="text-[color:var(--text-secondary)] mb-[10px]">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
+          <div className="p-5.5 border border-[var(--border-hairline)] rounded-[var(--radius-md)] hover-accent-border">
+            <h6 className="text-[color:var(--text-secondary)] mb-2.5">
               Event 1
             </h6>
             <h3
-              className="m-0 mb-[14px]"
+              className="m-0 mb-3.5"
               style={{ fontSize: "var(--text-h4)" }}
             >
               Wedding Ceremony
             </h3>
             <p
-              className="m-0 mb-[14px] pb-[14px] [font-variant-numeric:tabular-nums_lining-nums]"
+              className="m-0 mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums]"
               style={{
                 fontSize: "var(--text-small)",
                 lineHeight: 1.7,
@@ -1088,18 +1088,18 @@ export default function WeddingPage() {
             </p>
           </div>
 
-          <div className="p-[22px] border border-[var(--border-hairline)] rounded-[var(--radius-md)] hover-accent-border">
-            <h6 className="text-[color:var(--text-secondary)] mb-[10px]">
+          <div className="p-5.5 border border-[var(--border-hairline)] rounded-[var(--radius-md)] hover-accent-border">
+            <h6 className="text-[color:var(--text-secondary)] mb-2.5">
               Event 2
             </h6>
             <h3
-              className="m-0 mb-[14px]"
+              className="m-0 mb-3.5"
               style={{ fontSize: "var(--text-h4)" }}
             >
               Bowling Party
             </h3>
             <p
-              className="m-0 mb-[14px] pb-[14px] [font-variant-numeric:tabular-nums_lining-nums]"
+              className="m-0 mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums]"
               style={{
                 fontSize: "var(--text-small)",
                 lineHeight: 1.7,
@@ -1134,30 +1134,30 @@ export default function WeddingPage() {
       <section
         id="gallery"
         ref={galleryRef}
-        className="px-[20px] py-[52px] max-w-[1120px] mx-auto"
+        className="px-5 py-13 max-w-280 mx-auto"
         style={revealStyle("gallery")}
       >
-        <h6 className="text-[color:var(--text-accent)] mb-[14px]">
+        <h6 className="text-[color:var(--text-accent)] mb-3.5">
           Gallery
         </h6>
         <h2
-          className="m-0 mb-[24px]"
+          className="m-0 mb-6"
           style={{ fontSize: "clamp(27px,6vw,32px)" }}
         >
           A few favourites
         </h2>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-[14px]">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3.5">
           {GALLERY_PHOTOS.map((photo, i) => (
             <figure
               key={i}
-              className="m-0 p-[8px] bg-[var(--surface-raised)] border border-[var(--border-hairline)] rounded-[var(--radius-md)] cursor-zoom-in hover-accent-border"
+              className="m-0 p-2 bg-[var(--surface-raised)] border border-[var(--border-hairline)] rounded-[var(--radius-md)] cursor-zoom-in hover-accent-border"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={photo.src}
                 alt={photo.alt}
                 onClick={() => openLightbox(photo.src)}
-                className="block w-full aspect-[3/4] object-cover rounded-[2px]"
+                className="block w-full aspect-[3/4] object-cover rounded-xs"
                 style={{ filter: "sepia(0.1) saturate(0.94)" }}
               />
             </figure>
@@ -1171,22 +1171,22 @@ export default function WeddingPage() {
       <section
         id="details"
         ref={detailsRef}
-        className="px-[20px] py-[52px] max-w-[1120px] mx-auto"
+        className="px-5 py-13 max-w-280 mx-auto"
         style={revealStyle("details")}
       >
-        <h6 className="text-[color:var(--text-accent)] mb-[14px]">
+        <h6 className="text-[color:var(--text-accent)] mb-3.5">
           Good to know
         </h6>
         <h2
-          className="m-0 mb-[24px]"
+          className="m-0 mb-6"
           style={{ fontSize: "clamp(27px,6vw,32px)" }}
         >
           Details
         </h2>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-[16px]">
-          <div className="p-[22px] border border-[var(--border-hairline)] rounded-[var(--radius-md)]">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
+          <div className="p-5.5 border border-[var(--border-hairline)] rounded-[var(--radius-md)]">
             <h3
-              className="m-0 mb-[10px]"
+              className="m-0 mb-2.5"
               style={{ fontSize: "var(--text-h5)" }}
             >
               What to wear
@@ -1199,9 +1199,9 @@ export default function WeddingPage() {
               If you suit up and look good in photos, you can beat them.
             </p>
           </div>
-          <div className="p-[22px] border border-[var(--border-hairline)] rounded-[var(--radius-md)]">
+          <div className="p-5.5 border border-[var(--border-hairline)] rounded-[var(--radius-md)]">
             <h3
-              className="m-0 mb-[10px]"
+              className="m-0 mb-2.5"
               style={{ fontSize: "var(--text-h5)" }}
             >
               Dietary and accessibility
@@ -1224,18 +1224,18 @@ export default function WeddingPage() {
       <section
         id="rsvp"
         ref={rsvpRef}
-        className="px-[20px] pt-[52px] pb-[72px] max-w-[1120px] mx-auto"
+        className="px-5 pt-13 pb-18 max-w-280 mx-auto"
         style={revealStyle("rsvp")}
       >
-        <h6 className="text-[color:var(--text-accent)] mb-[14px]">RSVP</h6>
+        <h6 className="text-[color:var(--text-accent)] mb-3.5">RSVP</h6>
         <h2
-          className="m-0 mb-[10px]"
+          className="m-0 mb-2.5"
           style={{ fontSize: "clamp(27px,6vw,32px)" }}
         >
           Let us know which events you are going
         </h2>
         <p
-          className="m-0 mb-[28px] text-[color:var(--text-secondary)]"
+          className="m-0 mb-7 text-[color:var(--text-secondary)]"
           style={{ fontSize: "var(--text-small)", lineHeight: 1.7 }}
         >
           {RSVP_DEADLINE}
@@ -1250,7 +1250,7 @@ export default function WeddingPage() {
         />
 
         <p
-          className="mt-[16px] text-[color:var(--text-secondary)]"
+          className="mt-4 text-[color:var(--text-secondary)]"
           style={{ fontSize: "var(--text-small)", lineHeight: 1.7 }}
         >
           Trouble with the form?{" "}
@@ -1266,8 +1266,8 @@ export default function WeddingPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="px-[20px] pb-[56px]">
-        <hr className="h-0 max-w-[1120px] mx-auto mb-[24px] border-0 border-t border-[var(--border-hairline)]" />
+      <footer className="px-5 pb-14">
+        <hr className="h-0 max-w-280 mx-auto mb-6 border-0 border-t border-[var(--border-hairline)]" />
         <p
           className="m-0"
           style={{
@@ -1278,7 +1278,7 @@ export default function WeddingPage() {
         >
           Yu &amp; Jin
         </p>
-        <h6 className="text-[color:var(--text-muted)] mt-[8px]">
+        <h6 className="text-[color:var(--text-muted)] mt-2">
           September 2026 · Waterloo and Kitchener, Ontario
         </h6>
       </footer>
