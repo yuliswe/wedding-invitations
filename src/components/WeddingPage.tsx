@@ -55,7 +55,14 @@ export default function WeddingPage() {
   const galleryRef = useRef<HTMLElement>(null);
   const detailsRef = useRef<HTMLElement>(null);
   const rsvpRef = useRef<HTMLElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  // Web Audio API refs — the HTML5 <audio> element fails to load MP3s
+  // in some Chrome configurations, while AudioContext.decodeAudioData works.
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const audioBufferRef = useRef<AudioBuffer | null>(null);
+  const gainRef = useRef<GainNode | null>(null);
+  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const playOffsetRef = useRef(0);
+  const playStartRef = useRef(0);
   const progressRef = useRef<HTMLSpanElement>(null);
   const trackRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -147,12 +154,40 @@ export default function WeddingPage() {
   );
 
   const togglePlay = useCallback(() => {
-    const audio = audioRef.current;
     setPlaying((prev) => {
+      const ctx = audioCtxRef.current;
+      const buf = audioBufferRef.current;
+      const gain = gainRef.current;
       const next = !prev;
-      if (audio) {
-        if (next) audio.play().catch(() => {});
-        else audio.pause();
+
+      if (next) {
+        if (!ctx || !buf || !gain) return prev;
+        if (ctx.state === "suspended") ctx.resume();
+
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        src.connect(gain);
+
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 2);
+
+        const offset = playOffsetRef.current % buf.duration;
+        src.start(0, offset);
+        playStartRef.current = ctx.currentTime;
+        playOffsetRef.current = offset;
+        sourceRef.current = src;
+      } else {
+        if (ctx) {
+          const src = sourceRef.current;
+          if (src) {
+            const elapsed = ctx.currentTime - playStartRef.current;
+            if (buf) playOffsetRef.current = (playOffsetRef.current + elapsed) % buf.duration;
+            src.stop();
+            sourceRef.current = null;
+          }
+          localStorage.setItem("wedding-audio-position", String(playOffsetRef.current));
+        }
       }
       return next;
     });
@@ -345,43 +380,6 @@ export default function WeddingPage() {
     window.addEventListener("scroll", trackCurrentSection, { passive: true });
     trackCurrentSection();
 
-    const audio = audioRef.current;
-    if (audio) {
-      const saved = parseFloat(
-        localStorage.getItem("wedding-audio-position") || "0",
-      );
-      if (!isNaN(saved)) audio.currentTime = saved;
-
-      const onPlay = () => setPlaying(true);
-      const onPause = () => {
-        setPlaying(false);
-        localStorage.setItem(
-          "wedding-audio-position",
-          String(audio.currentTime),
-        );
-      };
-      const onTime = () => {
-        if (Math.floor(audio.currentTime) % 3 === 0)
-          localStorage.setItem(
-            "wedding-audio-position",
-            String(audio.currentTime),
-          );
-      };
-      audio.addEventListener("play", onPlay);
-      audio.addEventListener("pause", onPause);
-      audio.addEventListener("timeupdate", onTime);
-
-      return () => {
-        audio.removeEventListener("play", onPlay);
-        audio.removeEventListener("pause", onPause);
-        audio.removeEventListener("timeupdate", onTime);
-        localStorage.setItem(
-          "wedding-audio-position",
-          String(audio.currentTime),
-        );
-      };
-    }
-
     return () => {
       window.removeEventListener("resize", fit);
       window.removeEventListener("scroll", onScroll);
@@ -392,6 +390,31 @@ export default function WeddingPage() {
       revealObserver.disconnect();
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const ctx = new AudioContext();
+    audioCtxRef.current = ctx;
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+    gainRef.current = gain;
+
+    fetch("/assets/music.mp3")
+      .then((r) => r.arrayBuffer())
+      .then((buf) => ctx.decodeAudioData(buf))
+      .then((decoded) => {
+        audioBufferRef.current = decoded;
+      })
+      .catch(() => {});
+
+    const saved = parseFloat(
+      localStorage.getItem("wedding-audio-position") || "0",
+    );
+    if (!isNaN(saved)) playOffsetRef.current = saved;
+
+    return () => {
+      ctx.close();
+    };
+  }, []);
 
   useEffect(() => {
     const el = storyStackRef.current;
@@ -862,7 +885,7 @@ export default function WeddingPage() {
           >
             {playing ? <Pause size={14} /> : <Play size={14} />}
           </button>
-          <audio ref={audioRef} loop className="hidden" src="/assets/music.mp3" />
+
         </div>
 
         <span
