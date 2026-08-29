@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, Disc3 } from "lucide-react";
 
 const STORY_PHOTOS = [
-  { src: "/assets/photo-pei.jpeg", alt: "Yu and Jin on the red cliffs" },
+  { src: "/assets/story-photo.webp", alt: "Yu and Jin" },
   { src: "/assets/photo-pei.jpeg", alt: "Yu and Jin on the red cliffs" },
   { src: "/assets/photo-lighthouse.jpeg", alt: "Yu and Jin at the lighthouse" },
   { src: "/assets/photo-closeup.jpeg", alt: "Yu and Jin, close up" },
@@ -687,6 +687,21 @@ export default function WeddingPage() {
             animation: "ledger-rise var(--duration-rise) var(--easing) both",
           }}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/hero-illustration.webp"
+            alt=""
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: -2,
+              display: "block",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              filter: "sepia(0.14) saturate(0.9)",
+            }}
+          />
           <div
             ref={fitRef}
             style={{ width: "100%", transformOrigin: "50% 50%", willChange: "transform" }}
