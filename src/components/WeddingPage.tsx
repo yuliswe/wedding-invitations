@@ -753,7 +753,7 @@ export default function WeddingPage() {
                 >
                   <h6 className="text-text-accent">You are invited</h6>
                   <p
-                    className="uppercase text-text-muted mt-1.5 text-caption tracking-[0.08em] font-body"
+                    className="uppercase text-text-muted mt-1.5 text-xs tracking-[0.08em] font-body"
                   >
                     to the wedding of
                   </p>
@@ -761,7 +761,7 @@ export default function WeddingPage() {
                   <div className="flex items-center gap-3.5 my-6.5">
                     <span className="flex-1 h-px bg-accent-300" />
                     <span
-                      className="leading-none text-accent text-small font-heading"
+                      className="leading-none text-accent text-sm font-heading"
                     >
                       ✦
                     </span>
@@ -807,7 +807,7 @@ export default function WeddingPage() {
                       {countDisplay}
                     </span>
                     <span
-                      className="uppercase text-text-secondary text-caption tracking-[0.08em] font-body"
+                      className="uppercase text-text-secondary text-xs tracking-[0.08em] font-body"
                     >
                       days until the ceremony
                     </span>
@@ -867,7 +867,7 @@ export default function WeddingPage() {
 
         <span
           ref={currentSectionRef}
-          className="flex-auto min-w-0 overflow-hidden text-ellipsis whitespace-nowrap uppercase text-text-secondary opacity-0 font-body font-semibold text-caption tracking-overline"
+          className="flex-auto min-w-0 overflow-hidden text-ellipsis whitespace-nowrap uppercase text-text-secondary opacity-0 font-body font-semibold text-xs tracking-overline"
           style={{
             transition: "opacity var(--duration-fade) var(--easing)",
           }}
@@ -909,7 +909,7 @@ export default function WeddingPage() {
           How we got here
         </h2>
         <p
-          className="m-0 text-text-primary text-body leading-body max-w-measure"
+          className="m-0 text-text-primary text-base leading-body max-w-measure"
         >
           We&rsquo;re getting married! 💍 ❤️
           <br /><br />
@@ -963,7 +963,7 @@ export default function WeddingPage() {
               ))}
             </div>
             <span
-              className="text-text-muted [font-variant-numeric:tabular-nums_lining-nums] font-body text-caption"
+              className="text-text-muted [font-variant-numeric:tabular-nums_lining-nums] font-body text-xs"
             >
               {storyIndex + 1} / {TOTAL_CARDS}
             </span>
@@ -993,7 +993,7 @@ export default function WeddingPage() {
           </div>
         </div>
         <p
-          className="mt-7 text-text-primary text-body leading-body max-w-measure"
+          className="mt-7 text-text-primary text-base leading-body max-w-measure"
         >
           So many ordinary days became unforgettable memories. So many little
           adventures became a life we now call our own.
@@ -1041,7 +1041,7 @@ export default function WeddingPage() {
               Wedding Ceremony
             </h3>
             <p
-              className="mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-small leading-[1.7]"
+              className="mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-sm leading-[1.7]"
               style={{
                 borderBottom: "1px solid color-mix(in srgb, var(--color-text) 8%, transparent)",
               }}
@@ -1055,7 +1055,7 @@ export default function WeddingPage() {
               100 Regina Street South, Waterloo, Ontario
             </p>
             <p
-              className="m-0 text-text-secondary text-small leading-[1.7]"
+              className="m-0 text-text-secondary text-sm leading-[1.7]"
             >
               The ceremony is held in City Hall. Please arrive at least 15
               minutes early and check in at the Legislative Services counter on
@@ -1073,7 +1073,7 @@ export default function WeddingPage() {
               Bowling Party
             </h3>
             <p
-              className="mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-small leading-[1.7]"
+              className="mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-sm leading-[1.7]"
               style={{
                 borderBottom: "1px solid color-mix(in srgb, var(--color-text) 8%, transparent)",
               }}
@@ -1087,7 +1087,7 @@ export default function WeddingPage() {
               Kitchener, Ontario
             </p>
             <p
-              className="m-0 text-text-secondary text-small leading-[1.7]"
+              className="m-0 text-text-secondary text-sm leading-[1.7]"
             >
               Bowling shoes, good snacks, and us as newlyweds. Bring your A-game
               or your sense of humor — one of the two.
@@ -1162,7 +1162,7 @@ export default function WeddingPage() {
               What to wear
             </h3>
             <p
-              className="m-0 text-text-secondary text-small leading-[1.7]"
+              className="m-0 text-text-secondary text-sm leading-[1.7]"
             >
               Casual for both events — Yu &amp; Jin will be in shirts and jeans.
               If you suit up and look good in photos, you can beat them.
@@ -1175,7 +1175,7 @@ export default function WeddingPage() {
               Dietary and accessibility
             </h3>
             <p
-              className="m-0 text-text-secondary text-small leading-[1.7]"
+              className="m-0 text-text-secondary text-sm leading-[1.7]"
             >
               Let us know about any allergies, dietary needs, or accessibility
               requirements in the reply form below and we&rsquo;ll take care of
@@ -1202,7 +1202,7 @@ export default function WeddingPage() {
           Let us know which events you are going
         </h2>
         <p
-          className="mb-7 text-text-secondary text-small leading-[1.7]"
+          className="mb-7 text-text-secondary text-sm leading-[1.7]"
         >
           {RSVP_DEADLINE}
         </p>
@@ -1216,7 +1216,7 @@ export default function WeddingPage() {
         />
 
         <p
-          className="mt-4 text-text-secondary text-small leading-[1.7]"
+          className="mt-4 text-text-secondary text-sm leading-[1.7]"
         >
           Trouble with the form?{" "}
           <a
