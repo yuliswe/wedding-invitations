@@ -2,6 +2,45 @@
 
 /* Fonts are loaded via <link> tags in layout.tsx to avoid CSS @import order warnings. */
 
+@theme {
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-accent: var(--text-accent);
+  --color-accent: var(--color-accent);
+  --color-accent-200: var(--color-accent-200);
+  --color-accent-300: var(--color-accent-300);
+  --color-accent-700: var(--color-accent-700);
+  --color-neutral-100: var(--color-neutral-100);
+  --color-surface-page: var(--surface-page);
+  --color-surface-raised: var(--surface-raised);
+  --color-border-hairline: var(--border-hairline);
+  --color-border-accent: var(--color-accent);
+  --color-border-accent-300: var(--color-accent-300);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-lg: var(--shadow-lg);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --spacing-tap: var(--tap);
+  --text-display: var(--text-display);
+  --text-h2: var(--text-h2);
+  --text-h3: var(--text-h3);
+  --text-h4: var(--text-h4);
+  --text-h5: var(--text-h5);
+  --text-overline: var(--text-overline);
+  --text-control: var(--text-control);
+  --text-control-sm: var(--text-control-sm);
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-interactable: var(--font-interactable);
+  --tracking-overline: var(--tracking-overline);
+  --tracking-display: var(--tracking-display);
+  --leading-body: var(--leading-body);
+  --leading-heading: var(--leading-heading);
+  --spacing-measure: var(--measure);
+}
+
 /* ── Design tokens — Colors ── */
 :root {
   --color-bg: #f3f2f2;
@@ -41,6 +80,7 @@
   --border-strong: var(--color-accent);
   --state-hover: color-mix(in srgb, var(--color-accent) 12%, transparent);
   --state-pressed: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  --state-row-hover: color-mix(in srgb, var(--color-accent) 6%, transparent);
   --focus-ring: var(--color-accent);
   --scrim: color-mix(in srgb, var(--color-neutral-900) 50%, transparent);
   --disabled-opacity: 0.45;
@@ -80,48 +120,50 @@
   --font-heading: "Newsreader", Georgia, serif;
   --font-body: "Karla", system-ui, sans-serif;
   --font-interactable: "Karla", system-ui, sans-serif;
+  --font-click: var(--font-interactable);
 
   --font-heading-weight: 500;
   --font-weight-body: 400;
   --font-weight-emphasis: 600;
 
-  --text-display: 42px;
-  --text-h2: 32px;
-  --text-h3: 25px;
-  --text-h4: 20px;
-  --text-h5: 16px;
-  --text-overline: 12px;
-  --text-body-size: 15px;
-  --text-small: 13px;
-  --text-caption: 11px;
-  --text-control: 14px;
-  --text-control-sm: 12px;
+  --text-display: 2.25rem;       /* 36px – alias for text-4xl */
+  --text-h2: 1.875rem;           /* 30px – alias for text-3xl */
+  --text-h3: 1.5rem;             /* 24px – alias for text-2xl */
+  --text-h4: 1.25rem;            /* 20px – alias for text-xl */
+  --text-h5: 1rem;               /* 16px – alias for text-base */
+  --text-overline: 0.75rem;      /* 12px */
+  --text-control: 0.875rem;      /* 14px */
+  --text-control-sm: 0.75rem;    /* 12px */
 
-  --leading-body: 1.55;
-  --leading-heading: 1.15;
+  --leading-body: 1.5;
+  --leading-heading: 1.125;
   --tracking-overline: 0.1em;
   --tracking-display: -0.02em;
+  --figures-data: tabular-nums lining-nums;
 }
 
 /* ── Design tokens — Spacing ── */
 :root {
   --density: 0.9;
-  --space-1: calc(4px * var(--density));
-  --space-2: calc(8px * var(--density));
-  --space-3: calc(12px * var(--density));
-  --space-4: calc(16px * var(--density));
-  --space-6: calc(24px * var(--density));
-  --space-8: calc(32px * var(--density));
+  --space-1: calc(0.25rem * var(--density));
+  --space-2: calc(0.5rem * var(--density));
+  --space-3: calc(0.75rem * var(--density));
+  --space-4: calc(1rem * var(--density));
+  --space-5: calc(1.25rem * var(--density));
+  --space-6: calc(1.5rem * var(--density));
+  --space-7: calc(1.75rem * var(--density));
+  --space-8: calc(2rem * var(--density));
 
-  --tap: 44px;
-  --row-height: 56px;
+  --tap: 2.75rem;
+  --row-height: 3.5rem;
   --measure: 64ch;
-  --page-max: 1120px;
+  --page-max: 70rem;
 
   --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 7px;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.5rem;
   --hairline: 1px;
+  --hairline-strong: 1.5px;
 }
 
 /* ── Design tokens — Elevation ── */
@@ -142,6 +184,7 @@
   --duration-fade: calc(0.18s * var(--motion));
   --duration-rise: calc(0.22s * var(--motion));
   --duration-sheet: calc(0.24s * var(--motion));
+  --duration-shimmer: calc(1.2s * var(--motion));
   --easing: ease;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -152,6 +195,8 @@
 @keyframes ledger-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes ledger-rise { from { transform: translateY(14px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes ledger-spin { to { transform: rotate(360deg); } }
+@keyframes ledger-sheet { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes ledger-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
 @keyframes rsvpPulse {
   0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent); border-color: var(--color-accent); }
@@ -169,73 +214,77 @@
 }
 
 /* ── Base reset ── */
-*, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { font-size: 18px; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
-body {
-  margin: 0;
-  background: var(--surface-page);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  font-size: var(--text-body-size);
-  line-height: var(--leading-body);
-  -webkit-font-smoothing: antialiased;
+  body {
+    margin: 0;
+    background: var(--surface-page);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    line-height: var(--leading-heading);
+    margin: 0;
+  }
+  h1 { font-size: var(--text-display); font-weight: 400; letter-spacing: var(--tracking-display); }
+  h2 { font-size: var(--text-h2); font-weight: 400; letter-spacing: -0.018em; }
+  h3 { font-size: var(--text-h3); }
+  h4 { font-size: var(--text-h4); }
+  h5 { font-size: var(--text-h5); }
+
+  h6 {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-emphasis);
+    font-size: var(--text-overline);
+    letter-spacing: var(--tracking-overline);
+    text-transform: uppercase;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  a {
+    color: var(--color-accent);
+    font-family: var(--font-interactable);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.1875rem;
+  }
+  a:hover { color: var(--color-accent-700); text-decoration-thickness: 2px; }
+
+  button, input, textarea, select {
+    font-family: var(--font-interactable);
+    font-size: inherit;
+    color: inherit;
+  }
+
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  ::selection { background: color-mix(in srgb, var(--color-accent) 25%, transparent); }
+  [disabled], [aria-disabled="true"] { opacity: var(--disabled-opacity); cursor: not-allowed; }
+
+  /* ── Scrollbar hiding for story track ── */
+  [data-story-track]::-webkit-scrollbar { display: none; }
 }
-
-h1, h2, h3, h4, h5 {
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  line-height: var(--leading-heading);
-  margin: 0;
-}
-h1 { font-size: var(--text-display); font-weight: 400; letter-spacing: var(--tracking-display); }
-h2 { font-size: var(--text-h2); font-weight: 400; letter-spacing: -0.018em; }
-h3 { font-size: var(--text-h3); }
-h4 { font-size: var(--text-h4); }
-h5 { font-size: var(--text-h5); }
-
-h6 {
-  margin: 0;
-  font-family: var(--font-body);
-  font-weight: var(--font-weight-emphasis);
-  font-size: var(--text-overline);
-  letter-spacing: var(--tracking-overline);
-  text-transform: uppercase;
-}
-
-p { margin: 0; text-wrap: pretty; }
-
-a {
-  color: var(--color-accent);
-  font-family: var(--font-interactable);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-}
-a:hover { color: var(--color-accent-700); text-decoration-thickness: 2px; }
-
-button, input, textarea, select {
-  font-family: var(--font-interactable);
-  font-size: inherit;
-  color: inherit;
-}
-
-:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-::selection { background: color-mix(in srgb, var(--color-accent) 25%, transparent); }
-[disabled], [aria-disabled="true"] { opacity: var(--disabled-opacity); cursor: not-allowed; }
 
 /* ── Hover utilities ── */
-.hover-accent-border { transition: border-color var(--duration-fade) var(--easing); }
-.hover-accent-border:hover { border-color: var(--color-accent); }
+@layer utilities {
+  .hover-accent-border { transition: border-color var(--duration-fade) var(--easing); }
+  .hover-accent-border:hover { border-color: var(--color-accent); }
 
-.hover-state-bg { transition: background var(--duration-fade) var(--easing), border-color var(--duration-fade) var(--easing); }
-.hover-state-bg:hover { background: var(--state-hover); border-color: var(--color-accent); }
+  .hover-state-bg { transition: background var(--duration-fade) var(--easing), border-color var(--duration-fade) var(--easing); }
+  .hover-state-bg:hover { background: var(--state-hover); border-color: var(--color-accent); }
 
-.hover-nav-link { transition: border-color var(--duration-fade) var(--easing); }
-.hover-nav-link:hover { border-color: var(--color-accent); color: var(--text-primary); text-decoration: none; }
+  .hover-nav-link { transition: border-color var(--duration-fade) var(--easing); }
+  .hover-nav-link:hover { border-color: var(--color-accent); color: var(--text-primary); text-decoration: none; }
 
-.hover-rsvp { transition: background var(--duration-fade) var(--easing); }
-.hover-rsvp:hover { background: var(--state-hover); color: var(--color-accent-700); text-decoration: none; }
-
-/* ── Scrollbar hiding for story track ── */
-[data-story-track]::-webkit-scrollbar { display: none; }
+  .hover-rsvp { transition: background var(--duration-fade) var(--easing); }
+  .hover-rsvp:hover { background: var(--state-hover); color: var(--color-accent-700); text-decoration: none; }
+}

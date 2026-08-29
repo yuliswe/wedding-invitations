@@ -19,7 +19,7 @@ const GALLERY_PHOTOS = Array.from({ length: 9 }, (_, i) => ({
 }));
 
 const WEDDING_DATE = new Date("2026-09-15T13:00:00");
-const RSVP_DEADLINE = "Please respond by Friday, September 4, 2026 — we need to book the bowling lanes.";
+const RSVP_DEADLINE = "Please respond by Friday, September 4, 2026 - we need to book the bowling lanes.";
 
 const CARD_TILTS = [0, -3.2, 2.6, -1.6, 3.4, -2.4, 1.9];
 const TOTAL_CARDS = 7;
@@ -98,10 +98,6 @@ export default function WeddingPage() {
       const dx = (depth === 0 && dragDx ? dragDx : 0) + fan;
       const spin = depth === 0 && dragDx ? dragDx * 0.045 : 0;
       return (
-        "position:absolute;inset:0;margin:0;padding:10px;background:var(--surface-raised);" +
-        "border:1px solid var(--border-hairline);border-radius:var(--radius-md);" +
-        "box-shadow:var(--shadow-sm);overflow:hidden;" +
-        "transform-origin:50% 100%;" +
         `transform:translate(${dx}px,${lift}px) rotate(${tilt + spin}deg) scale(${scale});` +
         `opacity:${depth === 6 ? 0.85 : 1};` +
         `z-index:${10 - depth};` +
@@ -162,7 +158,6 @@ export default function WeddingPage() {
     });
   }, []);
 
-  // Lightbox keyboard handler
   useEffect(() => {
     if (!lightboxSrc) return;
     const onKey = (e: KeyboardEvent) => {
@@ -172,19 +167,16 @@ export default function WeddingPage() {
     return () => window.removeEventListener("keydown", onKey);
   }, [lightboxSrc, closeLightbox]);
 
-  // Set lightbox img src imperatively to avoid React re-render flash
   useEffect(() => {
     const img = lightboxImgRef.current;
     if (img && lightboxSrc) img.src = lightboxSrc;
   }, [lightboxSrc]);
 
-  // Main mount effect
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setOpened(true);
     }
 
-    // ── Countdown animation ──
     const daysLeft = Math.max(
       0,
       Math.ceil((WEDDING_DATE.getTime() - Date.now()) / 86400000),
@@ -197,7 +189,6 @@ export default function WeddingPage() {
     };
     requestAnimationFrame(countStep);
 
-    // ── Section reveal observers ──
     const sections: [string, React.RefObject<HTMLElement | null>][] = [
       ["story", storyRef],
       ["schedule", scheduleRef],
@@ -225,7 +216,6 @@ export default function WeddingPage() {
       }
     });
 
-    // ── Envelope fit ──
     const fit = () => {
       const stage = stageRef.current;
       const fitEl = fitRef.current;
@@ -248,7 +238,6 @@ export default function WeddingPage() {
     if (document.fonts?.ready) document.fonts.ready.then(fit);
     const fitRetry = setTimeout(fit, 400);
 
-    // ── Scroll handler: progress bar + envelope animation ──
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -327,7 +316,6 @@ export default function WeddingPage() {
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
 
-    // ── Current section tracker ──
     const sectionLabels: [string, string][] = [
       ["story", "Our story"],
       ["schedule", "Schedule"],
@@ -357,7 +345,6 @@ export default function WeddingPage() {
     window.addEventListener("scroll", trackCurrentSection, { passive: true });
     trackCurrentSection();
 
-    // ── Audio persistence ──
     const audio = audioRef.current;
     if (audio) {
       const saved = parseFloat(
@@ -395,7 +382,6 @@ export default function WeddingPage() {
       };
     }
 
-    // ── Cleanup ──
     return () => {
       window.removeEventListener("resize", fit);
       window.removeEventListener("scroll", onScroll);
@@ -407,7 +393,6 @@ export default function WeddingPage() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Story stack: ResizeObserver + touch handlers ──
   useEffect(() => {
     const el = storyStackRef.current;
     if (!el) return;
@@ -419,7 +404,6 @@ export default function WeddingPage() {
     });
     ro.observe(el);
 
-    // Touch events
     const onTouchStart = (e: TouchEvent) => {
       const t = e.touches[0];
       const fig =
@@ -479,7 +463,6 @@ export default function WeddingPage() {
     };
   }, [paintCards, goStory, openCardLightbox]);
 
-  // ── Pointer (mouse) drag for story stack ──
   const onStackDown = useCallback(
     (e: React.PointerEvent) => {
       if (e.pointerType === "touch") return;
@@ -498,25 +481,23 @@ export default function WeddingPage() {
         y: e.clientY,
         dx: 0,
         axis: null,
-        id: e.pointerId,
         hit,
       };
-      const el = storyStackRef.current;
-      if (el?.setPointerCapture) el.setPointerCapture(e.pointerId);
 
       const onMove = (ev: PointerEvent) => {
         if (!dragRef.current) return;
         const dx = ev.clientX - dragRef.current.x;
         const dy = ev.clientY - dragRef.current.y;
+        const ax = Math.abs(dx);
+        const ay = Math.abs(dy);
         if (!dragRef.current.axis) {
-          const ax = Math.abs(dx);
-          const ay = Math.abs(dy);
-          if (ax >= 8 && ay < ax * 3) dragRef.current.axis = "x";
-          else if (ay >= 24 && ay > ax * 3) dragRef.current.axis = "y";
+          if (ax >= 6 && ay < ax * 2)
+            dragRef.current.axis = "x";
+          else if (ay >= 6 && ay >= ax * 2)
+            dragRef.current.axis = "y";
           else return;
         }
         if (dragRef.current.axis !== "x") return;
-        ev.preventDefault();
         dragRef.current.dx = dx;
         paintCards(dx);
       };
@@ -526,7 +507,7 @@ export default function WeddingPage() {
         window.removeEventListener("pointerup", onUp);
         window.removeEventListener("pointercancel", onUp);
         if (!dragRef.current) return;
-        const dx = dragRef.current.dx;
+        const { dx } = dragRef.current;
         const moved = dragRef.current.axis !== null;
         const hitCard = dragRef.current.hit;
         dragRef.current = null;
@@ -545,7 +526,6 @@ export default function WeddingPage() {
     [paintCards, goStory, openCardLightbox],
   );
 
-  // ── Computed styles ──
   const revealStyle = (key: keyof typeof revealed) =>
     revealed[key]
       ? { opacity: 1, transform: "translateY(0)", transition: "opacity 0.5s ease, transform 0.5s ease" }
@@ -573,35 +553,26 @@ export default function WeddingPage() {
   };
 
   const flapStyle: React.CSSProperties = {
-    position: "absolute",
-    left: "calc(-1 * clamp(8px,2.2vw,14px))",
-    right: "calc(-1 * clamp(8px,2.2vw,14px))",
-    top: "clamp(18px,4vw,26px)",
-    height: "clamp(62px,16vw,108px)",
-    transformOrigin: "50% 0",
-    transformStyle: "preserve-3d",
+    left: "calc(-1 * clamp(0.5rem,2.2vw,0.875rem))",
+    right: "calc(-1 * clamp(0.5rem,2.2vw,0.875rem))",
+    top: "clamp(1.125rem,4vw,1.625rem)",
+    height: "clamp(3.875rem,16vw,6.75rem)",
     filter:
-      "drop-shadow(0 2px 4px color-mix(in srgb, var(--color-neutral-900) 16%, transparent)) drop-shadow(0 1px 1px color-mix(in srgb, var(--color-neutral-900) 12%, transparent))",
+      "drop-shadow(0 0.125rem 0.25rem color-mix(in srgb, var(--color-neutral-900) 16%, transparent)) drop-shadow(0 1px 1px color-mix(in srgb, var(--color-neutral-900) 12%, transparent))",
     ...(opened
       ? { transform: "rotateX(-168deg)", opacity: 0.62, zIndex: 0 }
       : { transform: "rotateX(0deg)", opacity: 1, zIndex: 0 }),
   };
 
   const cardStyle: React.CSSProperties = {
-    position: "relative",
-    zIndex: 3,
-    padding: "clamp(6px,1.6vw,9px)",
-    background: "var(--color-neutral-100)",
-    border: "1px solid var(--border-hairline)",
-    borderRadius: "var(--radius-sm)",
-    boxShadow: "var(--shadow-sm)",
+    padding: "clamp(0.375rem,1.6vw,0.5625rem)",
     ...(opened
       ? { transform: "translateY(0) scale(1)", opacity: 1 }
-      : { transform: "translateY(58px) scale(0.965)", opacity: 0 }),
+      : { transform: "translateY(3.625rem) scale(0.965)", opacity: 0 }),
   };
 
   return (
-    <div style={{ background: "var(--surface-page)", color: "var(--text-primary)", minHeight: "100vh" }}>
+    <div className="bg-surface-page text-text-primary min-h-dvh">
       {/* ── Lightbox ── */}
       {lightboxSrc && (
         <div
@@ -609,53 +580,26 @@ export default function WeddingPage() {
           role="dialog"
           aria-modal
           aria-label="Photograph"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-6 cursor-zoom-out"
           style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 9999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 24,
-            background:
-              "color-mix(in srgb, var(--color-neutral-900) 88%, transparent)",
+            background: "color-mix(in srgb, var(--color-neutral-900) 88%, transparent)",
             animation: "ledger-fade var(--duration-fade) var(--easing) both",
-            cursor: "zoom-out",
           }}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             ref={lightboxImgRef}
             alt="Photograph"
-            style={{
-              maxWidth: "100%",
-              maxHeight: "100%",
-              objectFit: "contain",
-              borderRadius: "var(--radius-md)",
-              boxShadow: "var(--shadow-lg)",
-            }}
+            className="max-w-full max-h-full object-contain rounded-md shadow-lg"
           />
           <button
             type="button"
             onClick={closeLightbox}
             aria-label="Close"
+            className="absolute top-4 right-4 w-tap h-tap inline-flex items-center justify-center bg-transparent rounded-md text-neutral-100 leading-none cursor-pointer font-body"
             style={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              width: "var(--tap)",
-              height: "var(--tap)",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "transparent",
-              border:
-                "1px solid color-mix(in srgb, var(--color-neutral-100) 40%, transparent)",
-              borderRadius: "var(--radius-md)",
-              color: "var(--color-neutral-100)",
-              fontFamily: "var(--font-body)",
-              fontSize: 20,
-              lineHeight: 1,
-              cursor: "pointer",
+              border: "1px solid color-mix(in srgb, var(--color-neutral-100) 40%, transparent)",
+              fontSize: "1.25rem",
             }}
           >
             ×
@@ -666,24 +610,14 @@ export default function WeddingPage() {
       {/* ── Hero / Envelope ── */}
       <section
         ref={trackRef}
-        style={{
-          position: "relative",
-          height: "260vh",
-          borderBottom: "1px solid var(--border-hairline)",
-        }}
+        className="relative border-b border-border-hairline h-[260vh]"
       >
         <div
           ref={stageRef}
+          className="sticky top-0 isolate flex flex-col justify-center overflow-hidden"
           style={{
-            position: "sticky",
-            top: 0,
-            isolation: "isolate",
-            padding: "clamp(14px,3vh,34px) 20px",
+            padding: "clamp(0.875rem,3vh,2.125rem) 1.25rem",
             height: "100svh",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            overflow: "hidden",
             animation: "ledger-rise var(--duration-rise) var(--easing) both",
           }}
         >
@@ -691,126 +625,73 @@ export default function WeddingPage() {
           <img
             src="/assets/hero-illustration.webp"
             alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              zIndex: -2,
-              display: "block",
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              filter: "sepia(0.14) saturate(0.9)",
-            }}
+            className="absolute inset-0 z-[-2] block w-full h-full object-cover"
+            style={{ filter: "sepia(0.14) saturate(0.9)" }}
           />
           <div
             ref={fitRef}
-            style={{ width: "100%", transformOrigin: "50% 50%", willChange: "transform" }}
+            className="w-full origin-center will-change-transform"
           >
             <div
-              style={{
-                position: "relative",
-                width: "100%",
-                maxWidth: 400,
-                margin: "0 auto",
-                perspective: 1400,
-              }}
+              className="relative w-full max-w-100 mx-auto"
+              style={{ perspective: "87.5rem" }}
             >
               {/* Envelope back */}
               <div
+                className="absolute z-[1] overflow-hidden rounded-sm"
                 style={{
-                  position: "absolute",
-                  left: "calc(-1 * clamp(8px,2.2vw,14px))",
-                  right: "calc(-1 * clamp(8px,2.2vw,14px))",
-                  top: "clamp(18px,4vw,26px)",
-                  bottom: "calc(-1 * clamp(30px,7vw,48px))",
-                  zIndex: 1,
+                  left: "calc(-1 * clamp(0.5rem,2.2vw,0.875rem))",
+                  right: "calc(-1 * clamp(0.5rem,2.2vw,0.875rem))",
+                  top: "clamp(1.125rem,4vw,1.625rem)",
+                  bottom: "calc(-1 * clamp(1.875rem,7vw,3rem))",
                   background: "#7f1934",
                   border: "1px solid #5d1327",
-                  borderRadius: "var(--radius-sm)",
-                  overflow: "hidden",
                   boxShadow:
-                    "0 18px 38px color-mix(in srgb, var(--color-neutral-900) 30%, transparent), 0 4px 10px color-mix(in srgb, var(--color-neutral-900) 20%, transparent)",
+                    "0 1.125rem 2.375rem color-mix(in srgb, var(--color-neutral-900) 30%, transparent), 0 0.25rem 0.625rem color-mix(in srgb, var(--color-neutral-900) 20%, transparent)",
                 }}
               >
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 9,
-                    border: "2px solid #e6c489",
-                  }}
-                />
+                <div className="absolute inset-2.25 border-2 border-[#e6c489]" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/assets/rose-floral-flourish.svg"
                   alt=""
-                  style={{
-                    position: "absolute",
-                    top: 4,
-                    right: 4,
-                    width: "64%",
-                    transform: "translate(21.5%, 18%) rotate(-270deg) scaleX(-1)",
-                    opacity: 0.92,
-                  }}
+                  className="absolute top-1 right-1 w-[64%] opacity-[0.92]"
+                  style={{ transform: "translate(21.5%, 18%) rotate(-270deg) scaleX(-1)" }}
                 />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/assets/deco-stamp.svg"
                   alt=""
-                  style={{
-                    position: "absolute",
-                    bottom: 10,
-                    left: 10,
-                    width: "23%",
-                    transform: "scaleX(-1)",
-                    opacity: 0.92,
-                  }}
+                  className="absolute bottom-2.5 left-2.5 w-[23%] opacity-[0.92]"
+                  style={{ transform: "scaleX(-1)" }}
                 />
               </div>
 
               {/* Double happiness + badge */}
               <div
                 aria-hidden
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  zIndex: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 10,
-                  pointerEvents: "none",
-                }}
+                className="absolute left-0 right-0 top-1/2 -translate-y-1/2 z-[2] flex flex-col items-center gap-2.5 pointer-events-none"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/assets/Chinese-Wedding-Symbol.svg"
                   alt="Double happiness"
+                  className="block h-auto"
+                  style={{ width: "clamp(5.625rem,24vw,9.375rem)" }}
+                />
+                <span
+                  className="h-px"
                   style={{
-                    width: "clamp(90px,24vw,150px)",
-                    height: "auto",
-                    display: "block",
+                    width: "clamp(3.75rem,16vw,6.5rem)",
+                    background: "color-mix(in srgb, var(--color-accent) 60%, transparent)",
                   }}
                 />
                 <span
+                  className="uppercase text-accent-300 font-body font-semibold"
                   style={{
-                    width: "clamp(60px,16vw,104px)",
-                    height: 1,
-                    background:
-                      "color-mix(in srgb, var(--color-accent) 60%, transparent)",
-                  }}
-                />
-                <span
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontWeight: 600,
-                    fontSize: "clamp(9px,2.4vw,12px)",
+                    fontSize: "clamp(0.5625rem,2.4vw,0.75rem)",
                     letterSpacing: "0.34em",
                     textIndent: "0.34em",
-                    textTransform: "uppercase",
-                    color: "var(--color-accent-300)",
                   }}
                 >
                   Happy wedding
@@ -818,28 +699,14 @@ export default function WeddingPage() {
               </div>
 
               {/* Envelope flap */}
-              <div ref={flapRef} style={flapStyle}>
+              <div ref={flapRef} className="absolute origin-top [transform-style:preserve-3d]" style={flapStyle}>
                 <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "var(--color-accent)",
-                    clipPath:
-                      "polygon(0 0, 100% 0, 100% 40%, 76% 100%, 24% 100%, 0 40%)",
-                  }}
+                  className="absolute inset-0 bg-accent"
+                  style={{ clipPath: "polygon(0 0, 100% 0, 100% 40%, 76% 100%, 24% 100%, 0 40%)" }}
                 />
                 <div
-                  style={{
-                    position: "absolute",
-                    left: 1.5,
-                    right: 1.5,
-                    top: 0,
-                    bottom: 1.5,
-                    background: "#761730",
-                    clipPath:
-                      "polygon(0 0, 100% 0, 100% 40%, 76% 100%, 24% 100%, 0 40%)",
-                    overflow: "hidden",
-                  }}
+                  className="absolute left-[1.5px] right-[1.5px] top-0 bottom-[1.5px] bg-[#761730] overflow-hidden"
+                  style={{ clipPath: "polygon(0 0, 100% 0, 100% 40%, 76% 100%, 24% 100%, 0 40%)" }}
                 />
               </div>
 
@@ -847,47 +714,23 @@ export default function WeddingPage() {
               <div
                 ref={hintRef}
                 aria-hidden
-                style={{
-                  ...(opened
-                    ? { opacity: 0, visibility: "hidden" as const }
-                    : {}),
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  bottom: "4%",
-                  zIndex: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 12,
-                  pointerEvents: "none",
-                }}
+                className="absolute left-0 right-0 bottom-[4%] z-[2] flex flex-col items-center gap-3 pointer-events-none"
+                style={opened ? { opacity: 0, visibility: "hidden" } : undefined}
               >
                 <span
+                  className="uppercase text-accent-200 font-body font-semibold"
                   style={{
-                    fontFamily: "var(--font-body)",
-                    fontWeight: 600,
-                    fontSize: "clamp(12px,3vw,15px)",
+                    fontSize: "clamp(0.75rem,3vw,0.9375rem)",
                     letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "var(--color-accent-200)",
                   }}
                 >
                   Scroll to open
                 </span>
                 <span
+                  className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-accent-200 leading-none font-body"
                   style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 44,
-                    height: 44,
                     border: "1.5px solid var(--color-accent-300)",
-                    borderRadius: "var(--radius-lg)",
-                    fontFamily: "var(--font-body)",
-                    fontSize: 22,
-                    lineHeight: 1,
-                    color: "var(--color-accent-200)",
+                    fontSize: "1.375rem",
                     animation: "scrollHint 1.8s ease-in-out infinite",
                   }}
                 >
@@ -896,98 +739,56 @@ export default function WeddingPage() {
               </div>
 
               {/* Invitation card */}
-              <div ref={cardRef} style={cardStyle}>
+              <div ref={cardRef} className="relative z-[3] bg-neutral-100 border border-border-hairline rounded-sm shadow-sm" style={cardStyle}>
                 <div
+                  className="absolute inset-0 pointer-events-none rounded-[inherit] opacity-20"
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    pointerEvents: "none",
-                    borderRadius: "inherit",
                     mixBlendMode: "multiply",
-                    opacity: 0.2,
                     backgroundImage: GRAIN_TEXTURE,
                   }}
                 />
                 <div
-                  style={{
-                    position: "relative",
-                    padding:
-                      "clamp(28px,6.5vw,46px) clamp(18px,5vw,34px) clamp(26px,5.5vw,42px)",
-                    border: "1px solid var(--color-accent-300)",
-                    textAlign: "center",
-                  }}
+                  className="relative text-center border border-border-accent-300"
+                  style={{ padding: "clamp(1.75rem,6.5vw,2.875rem) clamp(1.125rem,5vw,2.125rem) clamp(1.625rem,5.5vw,2.625rem)" }}
                 >
-                  <h6 style={{ color: "var(--text-accent)" }}>You are invited</h6>
+                  <h6 className="text-text-accent">You are invited</h6>
                   <p
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: "var(--text-caption)",
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase",
-                      color: "var(--text-muted)",
-                      margin: "6px 0 0",
-                    }}
+                    className="uppercase text-text-muted mt-1.5 text-xs tracking-[0.08em] font-body"
                   >
                     to the wedding of
                   </p>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 14,
-                      margin: "26px 0",
-                    }}
-                  >
+                  <div className="flex items-center gap-3.5 my-6.5">
+                    <span className="flex-1 h-px bg-accent-300" />
                     <span
-                      style={{
-                        flex: 1,
-                        height: 1,
-                        background: "var(--color-accent-300)",
-                      }}
-                    />
-                    <span
-                      style={{
-                        fontFamily: "var(--font-heading)",
-                        fontSize: "var(--text-small)",
-                        color: "var(--color-accent)",
-                        lineHeight: 1,
-                      }}
+                      className="leading-none text-accent text-sm font-heading"
                     >
                       ✦
                     </span>
-                    <span
-                      style={{
-                        flex: 1,
-                        height: 1,
-                        background: "var(--color-accent-300)",
-                      }}
-                    />
+                    <span className="flex-1 h-px bg-accent-300" />
                   </div>
 
                   <h1
+                    className="m-0 pb-[0.12em]"
                     style={{
-                      fontFamily:
-                        "'Pinyon Script', 'Newsreader', Georgia, serif",
+                      fontFamily: "'Pinyon Script', 'Newsreader', Georgia, serif",
                       fontWeight: 400,
-                      fontSize: "clamp(44px,11vw,68px)",
+                      fontSize: "clamp(2.75rem,11vw,4.25rem)",
                       lineHeight: 1.08,
                       letterSpacing: 0,
-                      margin: 0,
-                      paddingBottom: "0.12em",
                     }}
                   >
-                    Yu <span style={{ color: "var(--color-accent)" }}>&amp;</span>{" "}
+                    Yu <span className="text-accent">&amp;</span>{" "}
                     Jin
                   </h1>
 
                   <p
+                    className="text-text-primary"
                     style={{
-                      fontSize: "clamp(15px,4vw,16px)",
+                      fontSize: "clamp(0.9375rem,4vw,1rem)",
                       lineHeight: 1.75,
                       maxWidth: "46ch",
-                      margin: "20px auto 0",
-                      color: "var(--text-primary)",
+                      margin: "1.25rem auto 0",
                     }}
                   >
                     The paperwork happens at Waterloo City Hall. The real
@@ -995,68 +796,29 @@ export default function WeddingPage() {
                     balls at Bingemans. Everyone&rsquo;s invited to both.
                   </p>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 4,
-                      marginTop: 32,
-                      paddingTop: 24,
-                      borderTop: "1px solid var(--color-accent-300)",
-                    }}
-                  >
+                  <div className="flex flex-col items-center gap-1 mt-8 pt-6 border-t border-border-accent-300">
                     <span
+                      className="leading-none text-accent [font-variant-numeric:tabular-nums_lining-nums] font-heading"
                       style={{
-                        fontFamily: "var(--font-heading)",
                         fontWeight: 400,
-                        fontSize: "clamp(38px,10vw,52px)",
-                        lineHeight: 1,
-                        color: "var(--color-accent)",
-                        fontVariantNumeric: "tabular-nums lining-nums",
+                        fontSize: "clamp(2.375rem,10vw,3.25rem)",
                       }}
                     >
                       {countDisplay}
                     </span>
                     <span
-                      style={{
-                        fontFamily: "var(--font-body)",
-                        fontSize: "var(--text-caption)",
-                        letterSpacing: "0.08em",
-                        textTransform: "uppercase",
-                        color: "var(--text-secondary)",
-                      }}
+                      className="uppercase text-text-secondary text-xs tracking-[0.08em] font-body"
                     >
                       days until the ceremony
                     </span>
                   </div>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 12,
-                      flexWrap: "wrap",
-                      justifyContent: "center",
-                      marginTop: 28,
-                    }}
-                  >
+                  <div className="flex gap-3 flex-wrap justify-center mt-7">
                     <a
                       href="#schedule"
-                      className="hover-nav-link"
+                      className="inline-flex items-center justify-center min-h-tap px-5.5 no-underline text-text-primary bg-transparent border border-border-hairline rounded-md hover-accent-border text-control font-semibold font-interactable"
                       style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        minHeight: "var(--tap)",
-                        padding: "0 22px",
-                        fontFamily: "var(--font-interactable)",
-                        fontSize: "var(--text-control)",
-                        fontWeight: 600,
-                        textDecoration: "none",
-                        color: "var(--text-primary)",
-                        background: "transparent",
-                        border: "1px solid var(--border-hairline)",
-                        borderRadius: "var(--radius-md)",
+                        transition: "border-color var(--duration-fade) var(--easing)",
                       }}
                     >
                       Read the schedule
@@ -1070,95 +832,43 @@ export default function WeddingPage() {
       </section>
 
       {/* ── Sticky nav ── */}
-      <nav
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
-          display: "flex",
-          alignItems: "center",
-          gap: "clamp(7px,2vw,12px)",
-          padding: "0 16px",
-          minHeight: 44,
-          background: "var(--surface-page)",
-          borderTop: "1px solid var(--border-hairline)",
-          borderBottom: "1px solid var(--border-hairline)",
-        }}
-      >
+      <nav className="sticky top-0 z-20 flex items-center gap-[clamp(0.4375rem,2vw,0.75rem)] px-4 min-h-11 bg-surface-page border-t border-b border-border-hairline">
         <span
+          className="whitespace-nowrap flex-none leading-none inline-flex items-center self-center relative top-0.5 font-heading font-medium"
           style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 500,
-            fontSize: "clamp(15px,4vw,17px)",
+            fontSize: "clamp(0.9375rem,4vw,1.0625rem)",
             letterSpacing: "-0.01em",
-            whiteSpace: "nowrap",
-            flex: "none",
-            lineHeight: 1,
-            display: "inline-flex",
-            alignItems: "center",
-            alignSelf: "center",
-            position: "relative",
-            top: 2,
           }}
         >
           Yu &amp; Jin
         </span>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div className="flex items-center gap-2">
           <Disc3
             size={34}
             strokeWidth={1.5}
+            className="inline-flex flex-none"
             style={{
-              display: "inline-flex",
-              flex: "none",
-              color: playing
-                ? "var(--color-accent)"
-                : "var(--color-neutral-500)",
+              color: playing ? "var(--color-accent)" : "var(--color-neutral-500)",
               transition: "color var(--duration-fade) var(--easing)",
-              ...(playing
-                ? { animation: "ledger-spin 3.6s linear infinite" }
-                : {}),
+              ...(playing ? { animation: "ledger-spin 3.6s linear infinite" } : {}),
             }}
           />
           <button
             type="button"
             onClick={togglePlay}
             aria-label={playing ? "Pause music" : "Play music"}
-            className="hover-state-bg"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 28,
-              height: 28,
-              padding: 0,
-              background: "transparent",
-              border: "1px solid var(--border-hairline)",
-              borderRadius: "var(--radius-md)",
-              color: "var(--color-accent)",
-              cursor: "pointer",
-            }}
+            className="inline-flex items-center justify-center w-7 h-7 p-0 bg-transparent border border-border-hairline rounded-md text-accent cursor-pointer hover-state-bg"
           >
             {playing ? <Pause size={14} /> : <Play size={14} />}
           </button>
-          <audio ref={audioRef} loop style={{ display: "none" }} src="/assets/music.mp3" />
+          <audio ref={audioRef} loop className="hidden" src="/assets/music.mp3" />
         </div>
 
         <span
           ref={currentSectionRef}
+          className="flex-auto min-w-0 overflow-hidden text-ellipsis whitespace-nowrap uppercase text-text-secondary opacity-0 font-body font-semibold text-xs tracking-overline"
           style={{
-            flex: "1 1 auto",
-            minWidth: 0,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            fontFamily: "var(--font-body)",
-            fontWeight: 600,
-            fontSize: "var(--text-caption)",
-            letterSpacing: "var(--tracking-overline)",
-            textTransform: "uppercase",
-            color: "var(--text-secondary)",
-            opacity: 0,
             transition: "opacity var(--duration-fade) var(--easing)",
           }}
         />
@@ -1166,37 +876,15 @@ export default function WeddingPage() {
         <span
           ref={progressRef}
           aria-hidden
-          style={{
-            position: "absolute",
-            left: 0,
-            bottom: -1,
-            height: 1,
-            width: 0,
-            background: "var(--color-accent)",
-          }}
+          className="absolute left-0 -bottom-px h-px w-0 bg-accent"
         />
 
         <a
           href="#rsvp"
-          className="hover-rsvp"
+          className="ml-auto flex-none whitespace-nowrap inline-flex items-center justify-center min-h-7.5 no-underline text-accent-700 bg-transparent border border-accent rounded-md hover-rsvp font-interactable text-control font-semibold"
           data-rsvp-pulse
           style={{
-            marginLeft: "auto",
-            flex: "none",
-            whiteSpace: "nowrap",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 30,
-            padding: "0 clamp(10px,2.5vw,14px)",
-            fontFamily: "var(--font-interactable)",
-            fontSize: "var(--text-control)",
-            fontWeight: 600,
-            textDecoration: "none",
-            color: "var(--color-accent-700)",
-            background: "transparent",
-            border: "1px solid var(--color-accent)",
-            borderRadius: "var(--radius-md)",
+            padding: "0 clamp(0.625rem,2.5vw,0.875rem)",
             animation: "rsvpPulse 1s var(--easing) infinite",
           }}
         >
@@ -1208,57 +896,39 @@ export default function WeddingPage() {
       <section
         id="story"
         ref={storyRef}
-        style={{
-          padding: "52px 20px",
-          maxWidth: 1120,
-          margin: "0 auto",
-          ...revealStyle("story"),
-        }}
+        className="px-5 py-13 max-w-280 mx-auto"
+        style={revealStyle("story")}
       >
-        <h6 style={{ color: "var(--text-accent)", marginBottom: 14 }}>
+        <h6 className="text-text-accent mb-3.5">
           Our story
         </h6>
         <h2
-          style={{ fontSize: "clamp(27px,6vw,32px)", margin: "0 0 18px" }}
+          className="mb-4.5"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           How we got here
         </h2>
         <p
-          style={{
-            fontSize: "var(--text-body-size)",
-            lineHeight: "var(--leading-body)",
-            maxWidth: "var(--measure)",
-            margin: 0,
-            color: "var(--text-primary)",
-          }}
+          className="m-0 text-text-primary text-base leading-body max-w-measure"
         >
-          We met on [how you met], and it took us about five minutes to realize
-          we&rsquo;d found our favorite person to be ridiculous with. Somewhere
-          between [a funny early memory] and a very good dog, we decided to make
-          it official — twice, apparently, because one party clearly wasn&rsquo;t
-          enough.
+          We&rsquo;re getting married! 💍 ❤️
+          <br /><br />
+          Our story began with a road trip we were planning to Tobermory, never
+          knowing it would lead us somewhere far more beautiful.
+          <br /><br />
+          We fell in love in the golden days of August, and somewhere between
+          then and now, the trails of Kitchener and Waterloo became part of our
+          story. We wandered through endless paths, stayed beneath skies filled
+          with stars, made wishes on shooting stars, and stood together beneath
+          the glow of the Northern Lights.
         </p>
 
-        <div
-          style={{
-            margin: "28px 0 0",
-            width: "100vw",
-            marginLeft: "calc(50% - 50vw)",
-            padding: "0 20px",
-            boxSizing: "border-box",
-          }}
-        >
+        <div className="mt-7 w-screen ml-[calc(50%-50vw)] px-5 box-border">
           <div
             ref={storyStackRef}
             onPointerDown={onStackDown}
-            style={{
-              position: "relative",
-              width: "clamp(200px,24vw,300px)",
-              aspectRatio: "3/4",
-              touchAction: "pan-y",
-              cursor: "zoom-in",
-              userSelect: "none",
-            }}
+            className="relative aspect-[3/4] touch-pan-y cursor-zoom-in select-none"
+            style={{ width: "clamp(200px,24vw,300px)" }}
           >
             {STORY_PHOTOS.map((photo, i) => (
               <figure
@@ -1266,49 +936,22 @@ export default function WeddingPage() {
                 ref={(el) => {
                   cardRefs.current[i] = el;
                 }}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  margin: 0,
-                  padding: 10,
-                  background: "var(--surface-raised)",
-                  border: "1px solid var(--border-hairline)",
-                  borderRadius: "var(--radius-md)",
-                  boxShadow: "var(--shadow-sm)",
-                  overflow: "hidden",
-                  transformOrigin: "50% 100%",
-                  zIndex: 10 - i,
-                }}
+                className="absolute inset-0 m-0 p-2.5 bg-surface-raised border border-border-hairline rounded-md shadow-sm overflow-hidden origin-bottom"
+                style={{ zIndex: 10 - i }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={photo.src}
                   alt={photo.alt}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: 2,
-                    filter: "sepia(0.1) saturate(0.94)",
-                    pointerEvents: "none",
-                  }}
+                  className="block w-full h-full object-cover rounded-xs pointer-events-none"
+                  style={{ filter: "sepia(0.1) saturate(0.94)" }}
                 />
               </figure>
             ))}
           </div>
 
-          <div
-            style={{
-              position: "relative",
-              zIndex: 20,
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              marginTop: 40,
-            }}
-          >
-            <div style={{ display: "flex", gap: 7, alignItems: "center" }}>
+          <div className="relative z-20 flex items-center gap-3.5 mt-10">
+            <div className="flex gap-1.75 items-center">
               {Array.from({ length: TOTAL_CARDS }, (_, i) => (
                 <button
                   key={i}
@@ -1320,16 +963,11 @@ export default function WeddingPage() {
               ))}
             </div>
             <span
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "var(--text-caption)",
-                color: "var(--text-muted)",
-                fontVariantNumeric: "tabular-nums lining-nums",
-              }}
+              className="text-text-muted [font-variant-numeric:tabular-nums_lining-nums] font-body text-xs"
             >
               {storyIndex + 1} / {TOTAL_CARDS}
             </span>
-            <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
+            <div className="ml-auto flex gap-1.5">
               {(["‹", "›"] as const).map((arrow, idx) => (
                 <button
                   key={arrow}
@@ -1342,23 +980,10 @@ export default function WeddingPage() {
                   aria-label={
                     idx === 0 ? "Previous photograph" : "Next photograph"
                   }
+                  className="w-tap h-tap p-0 inline-flex items-center justify-center bg-transparent border border-border-hairline rounded-md text-text-secondary leading-none cursor-pointer font-body"
                   style={{
-                    width: "var(--tap)",
-                    height: "var(--tap)",
-                    padding: 0,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "transparent",
-                    border: "1px solid var(--border-hairline)",
-                    borderRadius: "var(--radius-md)",
-                    color: "var(--text-secondary)",
-                    fontFamily: "var(--font-body)",
-                    fontSize: 15,
-                    lineHeight: 1,
-                    cursor: "pointer",
-                    transition:
-                      "border-color var(--duration-fade) var(--easing)",
+                    fontSize: "0.9375rem",
+                    transition: "border-color var(--duration-fade) var(--easing)",
                   }}
                 >
                   {arrow}
@@ -1367,71 +992,58 @@ export default function WeddingPage() {
             </div>
           </div>
         </div>
+        <p
+          className="mt-7 text-text-primary text-base leading-body max-w-measure"
+        >
+          So many ordinary days became unforgettable memories. So many little
+          adventures became a life we now call our own.
+          <br /><br />
+          And now, we&rsquo;re ready to begin the next chapter of our story
+          — together, as husband and wife. ❤️
+          <br /><br />
+          We&rsquo;ll officially sign our marriage papers at Waterloo City Hall
+          on September 15th.
+          <br /><br />
+          And on September 19th, we&rsquo;ll celebrate with an after-party,
+          surrounded by the people we love.
+          <br /><br />
+          We&rsquo;d be so happy to have our friends there to witness this
+          beautiful moment and celebrate with us as we begin forever. 🥂 ✨
+        </p>
       </section>
 
-      <hr
-        style={{
-          height: 0,
-          margin: 0,
-          border: 0,
-          borderTop: "1px solid var(--border-hairline)",
-        }}
-      />
+      <hr className="h-0 m-0 border-0 border-t border-border-hairline" />
 
       {/* ── Schedule ── */}
       <section
         id="schedule"
         ref={scheduleRef}
-        style={{
-          padding: "52px 20px",
-          maxWidth: 1120,
-          margin: "0 auto",
-          ...revealStyle("schedule"),
-        }}
+        className="px-5 py-13 max-w-280 mx-auto"
+        style={revealStyle("schedule")}
       >
-        <h6 style={{ color: "var(--text-accent)", marginBottom: 14 }}>
+        <h6 className="text-text-accent mb-3.5">
           Schedule
         </h6>
         <h2
-          style={{
-            fontSize: "clamp(27px,6vw,32px)",
-            margin: "0 0 24px",
-          }}
+          className="mb-6"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           You are invited to two events
         </h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: 16,
-          }}
-        >
-          <div
-            className="hover-accent-border"
-            style={{
-              padding: 22,
-              border: "1px solid var(--border-hairline)",
-              borderRadius: "var(--radius-md)",
-            }}
-          >
-            <h6 style={{ color: "var(--text-secondary)", marginBottom: 10 }}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
+          <div className="p-5.5 border border-border-hairline rounded-md hover-accent-border">
+            <h6 className="text-text-secondary mb-2.5">
               Event 1
             </h6>
             <h3
-              style={{ fontSize: "var(--text-h4)", margin: "0 0 14px" }}
+              className="mb-3.5 text-h4"
             >
               Wedding Ceremony
             </h3>
             <p
+              className="mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-sm leading-[1.7]"
               style={{
-                fontSize: "var(--text-small)",
-                lineHeight: 1.7,
-                margin: "0 0 14px",
-                paddingBottom: 14,
-                borderBottom:
-                  "1px solid color-mix(in srgb, var(--color-text) 8%, transparent)",
-                fontVariantNumeric: "tabular-nums lining-nums",
+                borderBottom: "1px solid color-mix(in srgb, var(--color-text) 8%, transparent)",
               }}
             >
               Tuesday, 15 September 2026
@@ -1443,12 +1055,7 @@ export default function WeddingPage() {
               100 Regina Street South, Waterloo, Ontario
             </p>
             <p
-              style={{
-                fontSize: "var(--text-small)",
-                lineHeight: 1.7,
-                margin: 0,
-                color: "var(--text-secondary)",
-              }}
+              className="m-0 text-text-secondary text-sm leading-[1.7]"
             >
               The ceremony is held in City Hall. Please arrive at least 15
               minutes early and check in at the Legislative Services counter on
@@ -1456,31 +1063,19 @@ export default function WeddingPage() {
             </p>
           </div>
 
-          <div
-            className="hover-accent-border"
-            style={{
-              padding: 22,
-              border: "1px solid var(--border-hairline)",
-              borderRadius: "var(--radius-md)",
-            }}
-          >
-            <h6 style={{ color: "var(--text-secondary)", marginBottom: 10 }}>
+          <div className="p-5.5 border border-border-hairline rounded-md hover-accent-border">
+            <h6 className="text-text-secondary mb-2.5">
               Event 2
             </h6>
             <h3
-              style={{ fontSize: "var(--text-h4)", margin: "0 0 14px" }}
+              className="mb-3.5 text-h4"
             >
               Bowling Party
             </h3>
             <p
+              className="mb-3.5 pb-3.5 [font-variant-numeric:tabular-nums_lining-nums] text-sm leading-[1.7]"
               style={{
-                fontSize: "var(--text-small)",
-                lineHeight: 1.7,
-                margin: "0 0 14px",
-                paddingBottom: 14,
-                borderBottom:
-                  "1px solid color-mix(in srgb, var(--color-text) 8%, transparent)",
-                fontVariantNumeric: "tabular-nums lining-nums",
+                borderBottom: "1px solid color-mix(in srgb, var(--color-text) 8%, transparent)",
               }}
             >
               Saturday, 19 September 2026
@@ -1492,12 +1087,7 @@ export default function WeddingPage() {
               Kitchener, Ontario
             </p>
             <p
-              style={{
-                fontSize: "var(--text-small)",
-                lineHeight: 1.7,
-                margin: 0,
-                color: "var(--text-secondary)",
-              }}
+              className="m-0 text-text-secondary text-sm leading-[1.7]"
             >
               Bowling shoes, good snacks, and us as newlyweds. Bring your A-game
               or your sense of humor — one of the two.
@@ -1509,157 +1099,83 @@ export default function WeddingPage() {
         </div>
       </section>
 
-      <hr
-        style={{
-          height: 0,
-          margin: 0,
-          border: 0,
-          borderTop: "1px solid var(--border-hairline)",
-        }}
-      />
+      <hr className="h-0 m-0 border-0 border-t border-border-hairline" />
 
       {/* ── Gallery ── */}
       <section
         id="gallery"
         ref={galleryRef}
-        style={{
-          padding: "52px 20px",
-          maxWidth: 1120,
-          margin: "0 auto",
-          ...revealStyle("gallery"),
-        }}
+        className="px-5 py-13 max-w-280 mx-auto"
+        style={revealStyle("gallery")}
       >
-        <h6 style={{ color: "var(--text-accent)", marginBottom: 14 }}>
+        <h6 className="text-text-accent mb-3.5">
           Gallery
         </h6>
         <h2
-          style={{
-            fontSize: "clamp(27px,6vw,32px)",
-            margin: "0 0 24px",
-          }}
+          className="mb-6"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           A few favourites
         </h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-            gap: 14,
-          }}
-        >
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3.5">
           {GALLERY_PHOTOS.map((photo, i) => (
             <figure
               key={i}
-              className="hover-accent-border"
-              style={{
-                margin: 0,
-                padding: 8,
-                background: "var(--surface-raised)",
-                border: "1px solid var(--border-hairline)",
-                borderRadius: "var(--radius-md)",
-                cursor: "zoom-in",
-              }}
+              className="m-0 p-2 bg-surface-raised border border-border-hairline rounded-md cursor-zoom-in hover-accent-border"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={photo.src}
                 alt={photo.alt}
                 onClick={() => openLightbox(photo.src)}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  aspectRatio: "3/4",
-                  objectFit: "cover",
-                  borderRadius: 2,
-                  filter: "sepia(0.1) saturate(0.94)",
-                }}
+                className="block w-full aspect-[3/4] object-cover rounded-xs"
+                style={{ filter: "sepia(0.1) saturate(0.94)" }}
               />
             </figure>
           ))}
         </div>
       </section>
 
-      <hr
-        style={{
-          height: 0,
-          margin: 0,
-          border: 0,
-          borderTop: "1px solid var(--border-hairline)",
-        }}
-      />
+      <hr className="h-0 m-0 border-0 border-t border-border-hairline" />
 
       {/* ── Details ── */}
       <section
         id="details"
         ref={detailsRef}
-        style={{
-          padding: "52px 20px",
-          maxWidth: 1120,
-          margin: "0 auto",
-          ...revealStyle("details"),
-        }}
+        className="px-5 py-13 max-w-280 mx-auto"
+        style={revealStyle("details")}
       >
-        <h6 style={{ color: "var(--text-accent)", marginBottom: 14 }}>
+        <h6 className="text-text-accent mb-3.5">
           Good to know
         </h6>
         <h2
-          style={{
-            fontSize: "clamp(27px,6vw,32px)",
-            margin: "0 0 24px",
-          }}
+          className="mb-6"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           Details
         </h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: 16,
-          }}
-        >
-          <div
-            style={{
-              padding: 22,
-              border: "1px solid var(--border-hairline)",
-              borderRadius: "var(--radius-md)",
-            }}
-          >
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
+          <div className="p-5.5 border border-border-hairline rounded-md">
             <h3
-              style={{ fontSize: "var(--text-h5)", margin: "0 0 10px" }}
+              className="mb-2.5 text-h5"
             >
               What to wear
             </h3>
             <p
-              style={{
-                fontSize: "var(--text-small)",
-                lineHeight: 1.7,
-                margin: 0,
-                color: "var(--text-secondary)",
-              }}
+              className="m-0 text-text-secondary text-sm leading-[1.7]"
             >
               Casual for both events — Yu &amp; Jin will be in shirts and jeans.
               If you suit up and look good in photos, you can beat them.
             </p>
           </div>
-          <div
-            style={{
-              padding: 22,
-              border: "1px solid var(--border-hairline)",
-              borderRadius: "var(--radius-md)",
-            }}
-          >
+          <div className="p-5.5 border border-border-hairline rounded-md">
             <h3
-              style={{ fontSize: "var(--text-h5)", margin: "0 0 10px" }}
+              className="mb-2.5 text-h5"
             >
               Dietary and accessibility
             </h3>
             <p
-              style={{
-                fontSize: "var(--text-small)",
-                lineHeight: 1.7,
-                margin: 0,
-                color: "var(--text-secondary)",
-              }}
+              className="m-0 text-text-secondary text-sm leading-[1.7]"
             >
               Let us know about any allergies, dietary needs, or accessibility
               requirements in the reply form below and we&rsquo;ll take care of
@@ -1669,42 +1185,24 @@ export default function WeddingPage() {
         </div>
       </section>
 
-      <hr
-        style={{
-          height: 0,
-          margin: 0,
-          border: 0,
-          borderTop: "1px solid var(--border-hairline)",
-        }}
-      />
+      <hr className="h-0 m-0 border-0 border-t border-border-hairline" />
 
       {/* ── RSVP ── */}
       <section
         id="rsvp"
         ref={rsvpRef}
-        style={{
-          padding: "52px 20px 72px",
-          maxWidth: 1120,
-          margin: "0 auto",
-          ...revealStyle("rsvp"),
-        }}
+        className="px-5 pt-13 pb-18 max-w-280 mx-auto"
+        style={revealStyle("rsvp")}
       >
-        <h6 style={{ color: "var(--text-accent)", marginBottom: 14 }}>RSVP</h6>
+        <h6 className="text-text-accent mb-3.5">RSVP</h6>
         <h2
-          style={{
-            fontSize: "clamp(27px,6vw,32px)",
-            margin: "0 0 10px",
-          }}
+          className="mb-2.5"
+          style={{ fontSize: "clamp(1.6875rem,6vw,2rem)" }}
         >
           Let us know which events you are going
         </h2>
         <p
-          style={{
-            fontSize: "var(--text-small)",
-            lineHeight: 1.7,
-            color: "var(--text-secondary)",
-            margin: "0 0 28px",
-          }}
+          className="mb-7 text-text-secondary text-sm leading-[1.7]"
         >
           {RSVP_DEADLINE}
         </p>
@@ -1713,23 +1211,12 @@ export default function WeddingPage() {
           src="https://app.youform.com/forms/aoufgkyy"
           title="RSVP form"
           loading="lazy"
-          style={{
-            width: "100%",
-            height: "clamp(520px,78vh,760px)",
-            border: "1px solid var(--border-hairline)",
-            borderRadius: "var(--radius-md)",
-            background: "transparent",
-            display: "block",
-          }}
+          className="w-full block border border-border-hairline rounded-md bg-transparent"
+          style={{ height: "clamp(520px,78vh,760px)" }}
         />
 
         <p
-          style={{
-            fontSize: "var(--text-small)",
-            lineHeight: 1.7,
-            color: "var(--text-secondary)",
-            margin: "16px 0 0",
-          }}
+          className="mt-4 text-text-secondary text-sm leading-[1.7]"
         >
           Trouble with the form?{" "}
           <a
@@ -1744,27 +1231,14 @@ export default function WeddingPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer style={{ padding: "0 20px 56px" }}>
-        <hr
-          style={{
-            height: 0,
-            maxWidth: 1120,
-            margin: "0 auto 24px",
-            border: 0,
-            borderTop: "1px solid var(--border-hairline)",
-          }}
-        />
+      <footer className="px-5 pb-14">
+        <hr className="h-0 max-w-280 mx-auto mb-6 border-0 border-t border-border-hairline" />
         <p
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 500,
-            fontSize: "var(--text-h5)",
-            margin: 0,
-          }}
+          className="m-0 text-h5 font-heading font-medium"
         >
           Yu &amp; Jin
         </p>
-        <h6 style={{ color: "var(--text-muted)", marginTop: 8 }}>
+        <h6 className="text-text-muted mt-2">
           September 2026 · Waterloo and Kitchener, Ontario
         </h6>
       </footer>
