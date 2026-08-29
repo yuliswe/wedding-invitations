@@ -75,6 +75,7 @@ export default function WeddingPage() {
   const envelopeLatchedRef = useRef(false);
   const trackCollapsedRef = useRef(false);
   const lastSectionLabelRef = useRef<string | null>(null);
+  const fadeInRef = useRef<number | null>(null);
 
   useEffect(() => {
     storyIndexRef.current = storyIndex;
@@ -146,17 +147,37 @@ export default function WeddingPage() {
     [openLightbox],
   );
 
+  const fadeAudio = useCallback((audio: HTMLAudioElement, to: number, ms: number) => {
+    if (fadeInRef.current) cancelAnimationFrame(fadeInRef.current);
+    const from = audio.volume;
+    const start = performance.now();
+    const step = (t: number) => {
+      const p = Math.min(1, (t - start) / ms);
+      const ease = p * (2 - p);
+      audio.volume = from + (to - from) * ease;
+      if (p < 1) fadeInRef.current = requestAnimationFrame(step);
+      else fadeInRef.current = null;
+    };
+    fadeInRef.current = requestAnimationFrame(step);
+  }, []);
+
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     setPlaying((prev) => {
       const next = !prev;
       if (audio) {
-        if (next) audio.play().catch(() => {});
-        else audio.pause();
+        if (next) {
+          audio.volume = 0;
+          audio.play().catch(() => {});
+          fadeAudio(audio, 1, 2000);
+        } else {
+          if (fadeInRef.current) cancelAnimationFrame(fadeInRef.current);
+          audio.pause();
+        }
       }
       return next;
     });
-  }, []);
+  }, [fadeAudio]);
 
   useEffect(() => {
     if (!lightboxSrc) return;
@@ -371,7 +392,16 @@ export default function WeddingPage() {
       audio.addEventListener("pause", onPause);
       audio.addEventListener("timeupdate", onTime);
 
+      // Fade in on page load
+      audio.volume = 0;
+      audio.play().then(() => {
+        fadeAudio(audio, 1, 2500);
+      }).catch(() => {
+        // Autoplay blocked by browser — user can tap the play button
+      });
+
       return () => {
+        if (fadeInRef.current) cancelAnimationFrame(fadeInRef.current);
         audio.removeEventListener("play", onPlay);
         audio.removeEventListener("pause", onPause);
         audio.removeEventListener("timeupdate", onTime);
