@@ -23,25 +23,25 @@
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --spacing-tap: var(--tap);
-  --text-display: 2.625rem;
-  --text-h2: 2rem;
-  --text-h3: 1.5625rem;
-  --text-h4: 1.25rem;
-  --text-h5: 1rem;
-  --text-overline: 0.75rem;
-  --text-body: 0.9375rem;
-  --text-small: 0.8125rem;
-  --text-caption: 0.6875rem;
-  --text-control: 0.875rem;
-  --text-control-sm: 0.75rem;
-  --font-heading: "Newsreader", Georgia, serif;
-  --font-body: "Karla", system-ui, sans-serif;
-  --font-interactable: "Karla", system-ui, sans-serif;
-  --tracking-overline: 0.1em;
-  --tracking-display: -0.02em;
-  --leading-body: 1.55;
-  --leading-heading: 1.15;
-  --spacing-measure: 64ch;
+  --text-display: var(--text-display);
+  --text-h2: var(--text-h2);
+  --text-h3: var(--text-h3);
+  --text-h4: var(--text-h4);
+  --text-h5: var(--text-h5);
+  --text-overline: var(--text-overline);
+  --text-body: var(--text-body);
+  --text-small: var(--text-small);
+  --text-caption: var(--text-caption);
+  --text-control: var(--text-control);
+  --text-control-sm: var(--text-control-sm);
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-interactable: var(--font-interactable);
+  --tracking-overline: var(--tracking-overline);
+  --tracking-display: var(--tracking-display);
+  --leading-body: var(--leading-body);
+  --leading-heading: var(--leading-heading);
+  --spacing-measure: var(--measure);
 }
 
 /* ── Design tokens — Colors ── */
@@ -119,8 +119,30 @@
 
 /* ── Design tokens — Typography ── */
 :root {
+  --font-heading: "Newsreader", Georgia, serif;
+  --font-body: "Karla", system-ui, sans-serif;
+  --font-interactable: "Karla", system-ui, sans-serif;
+
   --font-heading-weight: 500;
+  --font-weight-body: 400;
   --font-weight-emphasis: 600;
+
+  --text-display: 2.625rem;     /* 42px */
+  --text-h2: 2rem;               /* 32px */
+  --text-h3: 1.5625rem;          /* 25px */
+  --text-h4: 1.25rem;            /* 20px */
+  --text-h5: 1rem;               /* 16px */
+  --text-overline: 0.75rem;      /* 12px */
+  --text-body: 0.9375rem;        /* 15px */
+  --text-small: 0.8125rem;       /* 13px */
+  --text-caption: 0.6875rem;     /* 11px */
+  --text-control: 0.875rem;      /* 14px */
+  --text-control-sm: 0.75rem;    /* 12px */
+
+  --leading-body: 1.55;
+  --leading-heading: 1.15;
+  --tracking-overline: 0.1em;
+  --tracking-display: -0.02em;
 }
 
 /* ── Design tokens — Spacing ── */
@@ -190,7 +212,7 @@
 
 /* ── Base reset ── */
 *, *::before, *::after { box-sizing: border-box; }
-html { font-size: 20px; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { font-size: 18px; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
   margin: 0;
