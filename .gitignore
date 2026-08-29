@@ -5,6 +5,8 @@
 node_modules/
 dist/
 build/
+out/
+.next/
 .DS_Store
 *.local
 *.local.*
@@ -12,3 +14,4 @@ build/
 *.temp.*
 *.tmp
 *.tmp.*
+next-env.d.ts
