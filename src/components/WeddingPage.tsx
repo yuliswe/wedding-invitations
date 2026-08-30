@@ -59,6 +59,7 @@ export default function WeddingPage() {
   const rsvpRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const fadeRef = useRef<number | null>(null);
+  const gestureJustFiredRef = useRef(false);
   const progressRef = useRef<HTMLSpanElement>(null);
   const trackRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -67,7 +68,7 @@ export default function WeddingPage() {
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
   const lightboxImgRef = useRef<HTMLImageElement>(null);
   const currentSectionRef = useRef<HTMLSpanElement>(null);
-  const hintRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLButtonElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const flapRef = useRef<HTMLDivElement>(null);
 
@@ -165,6 +166,7 @@ export default function WeddingPage() {
   }, []);
 
   const togglePlay = useCallback(() => {
+    if (gestureJustFiredRef.current) return;
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
@@ -214,25 +216,23 @@ export default function WeddingPage() {
       ["details", detailsRef],
       ["rsvp", rsvpRef],
     ];
-    const revealObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const key = entry.target.getAttribute("data-reveal-key");
-            if (key)
-              setRevealed((s) => ({ ...s, [key]: true }));
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12 },
-    );
-    sections.forEach(([key, ref]) => {
-      if (ref.current) {
-        ref.current.setAttribute("data-reveal-key", key);
-        revealObserver.observe(ref.current);
+    // Reveal sections as they scroll into view. Uses a scroll listener
+    // instead of IntersectionObserver because iOS Safari can miss
+    // observer callbacks after the envelope track collapses and the
+    // scroll position is adjusted mid–smooth-scroll.
+    const revealedSet = new Set<string>();
+    const checkReveals = () => {
+      for (const [key, ref] of sections) {
+        if (revealedSet.has(key) || !ref.current) continue;
+        const r = ref.current.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.88) {
+          revealedSet.add(key);
+          setRevealed((s) => ({ ...s, [key]: true }));
+        }
       }
-    });
+    };
+    window.addEventListener("scroll", checkReveals, { passive: true });
+    checkReveals();
 
     const fit = () => {
       const stage = stageRef.current;
@@ -367,21 +367,16 @@ export default function WeddingPage() {
       window.removeEventListener("resize", fit);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("scroll", trackCurrentSection);
+      window.removeEventListener("scroll", checkReveals);
       if (scrollTick) cancelAnimationFrame(scrollTick);
       clearTimeout(fitRetry);
       clearTimeout(collapseTimer);
-      revealObserver.disconnect();
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    const saved = parseFloat(
-      localStorage.getItem("wedding-audio-position") || "0",
-    );
-    if (!isNaN(saved)) audio.currentTime = saved;
 
     // Auto-play with fade-in on first user interaction. iOS Safari
     // requires touchend or click; touchstart does not qualify.
@@ -391,26 +386,20 @@ export default function WeddingPage() {
       if (started || !audio.paused) return;
       started = true;
       gestures.forEach(e => window.removeEventListener(e, onGesture, true));
+      // Suppress togglePlay in the same event so the button click
+      // doesn't immediately pause what the gesture just started.
+      gestureJustFiredRef.current = true;
+      queueMicrotask(() => { gestureJustFiredRef.current = false; });
       startFadeIn(audio);
     };
     gestures.forEach(e => window.addEventListener(e, onGesture, { capture: true }));
 
-    const onPause = () => {
-      setPlaying(false);
-      localStorage.setItem("wedding-audio-position", String(audio.currentTime));
-    };
-    const onTime = () => {
-      if (Math.floor(audio.currentTime) % 3 === 0)
-        localStorage.setItem("wedding-audio-position", String(audio.currentTime));
-    };
+    const onPause = () => setPlaying(false);
     audio.addEventListener("pause", onPause);
-    audio.addEventListener("timeupdate", onTime);
 
     return () => {
       gestures.forEach(e => window.removeEventListener(e, onGesture, true));
       audio.removeEventListener("pause", onPause);
-      audio.removeEventListener("timeupdate", onTime);
-      localStorage.setItem("wedding-audio-position", String(audio.currentTime));
     };
   }, [startFadeIn]);
 
@@ -732,11 +721,17 @@ export default function WeddingPage() {
               </div>
 
               {/* Scroll hint */}
-              <div
+              <button
                 ref={hintRef}
-                aria-hidden
-                className="absolute left-0 right-0 bottom-[4%] z-[2] flex flex-col items-center gap-3 pointer-events-none"
-                style={opened ? { opacity: 0, visibility: "hidden" } : undefined}
+                type="button"
+                aria-label="Open invitation"
+                className="absolute left-0 right-0 bottom-[4%] z-[4] flex flex-col items-center gap-3 bg-transparent border-none cursor-pointer"
+                style={opened ? { opacity: 0, visibility: "hidden", pointerEvents: "none" } : undefined}
+                onClick={() => {
+                  const track = trackRef.current;
+                  if (!track) return;
+                  window.scrollTo({ top: track.offsetTop + track.offsetHeight - window.innerHeight, behavior: "smooth" });
+                }}
               >
                 <span
                   className="uppercase text-accent-200 font-body font-semibold"
@@ -757,7 +752,7 @@ export default function WeddingPage() {
                 >
                   ↓
                 </span>
-              </div>
+              </button>
 
               {/* Invitation card */}
               <div ref={cardRef} className="relative z-[3] bg-neutral-100 border border-border-hairline rounded-sm shadow-sm" style={cardStyle}>
